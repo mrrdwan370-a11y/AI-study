@@ -47,6 +47,15 @@ class Task(models.Model):
         default="PENDING"
     )
 
+    # ==============================
+    # AI Solution
+    # ==============================
+
+    ai_solution = models.TextField(
+        blank=True,
+        null=True
+    )
+
     created_at = models.DateTimeField(
         auto_now_add=True
     )

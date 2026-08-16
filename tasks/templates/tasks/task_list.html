@@ -155,6 +155,8 @@ Study Planner | AI Study Hub
 
                 <div class="card-body">
 
+                    <!-- Priority & Status -->
+
                     <div class="d-flex justify-content-between mb-3">
 
                         <span class="badge
@@ -203,10 +205,14 @@ Study Planner | AI Study Hub
                     </div>
 
 
+                    <!-- Task Title -->
+
                     <h5 class="fw-bold">
                         {{ task.title }}
                     </h5>
 
+
+                    <!-- Task Description -->
 
                     <p class="text-muted">
 
@@ -214,6 +220,8 @@ Study Planner | AI Study Hub
 
                     </p>
 
+
+                    <!-- Due Date -->
 
                     <div class="small text-muted mb-3">
 
@@ -232,7 +240,9 @@ Study Planner | AI Study Hub
                     </div>
 
 
-                    <div class="d-flex gap-2">
+                    <!-- Normal Actions -->
+
+                    <div class="d-flex gap-2 flex-wrap">
 
                         <form
                             method="POST"
@@ -271,7 +281,61 @@ Study Planner | AI Study Hub
 
                         </a>
 
+
+                        <!-- AI Button -->
+
+                        <form
+                            method="POST"
+                            action="{% url 'solve_task_with_ai' task.pk %}">
+
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="btn btn-sm btn-primary">
+
+                                <i class="bi bi-robot"></i>
+                                Solve with AI
+
+                            </button>
+
+                        </form>
+
                     </div>
+
+
+                    <!-- AI Solution -->
+
+                    {% if task.ai_solution %}
+
+                    <div class="mt-4">
+
+                        <div class="card bg-light border-0">
+
+                            <div class="card-body">
+
+                                <h6 class="fw-bold mb-3">
+
+                                    <i class="bi bi-robot"></i>
+                                    AI Solution
+
+                                </h6>
+
+                                <div
+                                    class="small"
+                                    style="white-space: pre-line;">
+
+                                    {{ task.ai_solution }}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {% endif %}
 
                 </div>
 

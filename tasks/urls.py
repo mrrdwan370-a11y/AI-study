@@ -33,4 +33,11 @@ urlpatterns = [
         views.task_complete,
         name="task_complete"
     ),
+
+    # 🤖 Solve Task With AI
+    path(
+        "<int:pk>/solve-ai/",
+        views.solve_task_with_ai,
+        name="solve_task_with_ai"
+    ),
 ]

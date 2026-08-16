@@ -12,6 +12,9 @@ from .forms import TaskForm
 from .models import Task
 from dashboard.models import Activity
 
+# AI Service
+from ai_assistant.services import ask_ai
+
 
 @login_required
 def task_list(request):
@@ -43,11 +46,13 @@ def task_list(request):
         )
 
     if status:
+
         tasks = tasks.filter(
             status=status
         )
 
     if priority:
+
         tasks = tasks.filter(
             priority=priority
         )
@@ -257,6 +262,85 @@ def task_complete(request, pk):
             request,
             message
         )
+
+    return redirect(
+        "tasks_list"
+    )
+
+
+# ==========================================================
+# 🤖 Solve Task With AI
+# ==========================================================
+
+@login_required
+def solve_task_with_ai(request, pk):
+
+    task = get_object_or_404(
+        Task,
+        pk=pk,
+        user=request.user
+    )
+
+    if request.method == "POST":
+
+        try:
+
+            prompt = f"""
+You are an AI Study Assistant.
+
+Help the student solve the following task.
+
+Task Title:
+{task.title}
+
+Task Description:
+{task.description}
+
+Priority:
+{task.get_priority_display()}
+
+Give a clear and accurate solution.
+
+Explain the solution step by step.
+If the task is a programming question, provide the code
+and explain how the code works.
+
+Do not just give the final answer.
+Help the student understand the solution.
+"""
+
+            response = ask_ai(
+                [
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ]
+            )
+
+            task.ai_solution = response
+
+            task.save(
+                update_fields=["ai_solution"]
+            )
+
+            Activity.objects.create(
+                user=request.user,
+                action="AI Solved Task",
+                description=f"AI solved task: {task.title}"
+            )
+
+            messages.success(
+                request,
+                "AI solved your task successfully!"
+            )
+
+        except Exception as e:
+
+            messages.error(
+                request,
+                f"AI error: {str(e)}"
+            )
 
     return redirect(
         "tasks_list"

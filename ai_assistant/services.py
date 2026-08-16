@@ -1,24 +1,5 @@
-# from django.conf import settings
-# from openai import OpenAI
+import time
 
-# client = OpenAI(
-#     api_key=settings.OPENAI_API_KEY
-# )
-
-
-# def ask_ai(messages):
-
-#     response = client.chat.completions.create(
-
-#         model="gpt-4o-mini",
-
-#         messages=messages,
-
-#         temperature=0.7,
-
-#     )
-
-#     return response.choices[0].message.content
 from django.conf import settings
 from google import genai
 from google.genai import types
@@ -43,30 +24,69 @@ def ask_ai(messages):
 
     for message in messages:
 
-        if message["role"] == "system":
-            continue
+        role = message.get("role")
 
-        role = message["role"]
+        if role == "system":
+            continue
 
         if role == "assistant":
             role = "model"
 
-        conversation.append({
-            "role": role,
-            "parts": [
-                {
-                    "text": message["content"]
-                }
-            ]
-        })
-
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=conversation,
-        config=types.GenerateContentConfig(
-            system_instruction=system_instruction,
-            max_output_tokens=1000,
+        conversation.append(
+            types.Content(
+                role=role,
+                parts=[
+                    types.Part(
+                        text=message.get("content", "")
+                    )
+                ]
+            )
         )
-    )
 
-    return response.text
+    # Retry if Gemini is temporarily unavailable
+    max_retries = 3
+
+    for attempt in range(max_retries):
+
+        try:
+
+            response = client.models.generate_content(
+                model="gemini-3.5-flash",
+
+                contents=conversation,
+
+                config=types.GenerateContentConfig(
+                    system_instruction=system_instruction,
+                    max_output_tokens=1000,
+                    temperature=0.7,
+                )
+            )
+
+            return response.text
+
+        except Exception as e:
+
+            error_message = str(e)
+
+            print("================================")
+            print("GEMINI AI ERROR:")
+            print(error_message)
+            print("================================")
+
+            # Retry only temporary server errors
+            if "503" in error_message:
+
+                if attempt < max_retries - 1:
+
+                    wait_time = 2 ** attempt
+
+                    print(
+                        f"Gemini unavailable. "
+                        f"Retrying in {wait_time} seconds..."
+                    )
+
+                    time.sleep(wait_time)
+
+                    continue
+
+            raise
