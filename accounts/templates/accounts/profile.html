@@ -1,0 +1,1234 @@
+{% extends "base.html" %}
+
+{% block title %}
+AI Study Hub | My Profile
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    /* =========================================
+       AI STUDY HUB — PREMIUM PROFILE
+    ========================================= */
+
+    .profile-page {
+        max-width: 1500px;
+        margin: auto;
+        padding: 10px 0 50px;
+    }
+
+    /* HERO */
+
+    .profile-hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 28px;
+        padding: 35px;
+        margin-bottom: 25px;
+        color: white;
+
+        background:
+            radial-gradient(
+                circle at 85% 20%,
+                rgba(139, 92, 246, .35),
+                transparent 30%
+            ),
+            radial-gradient(
+                circle at 10% 100%,
+                rgba(59, 130, 246, .30),
+                transparent 35%
+            ),
+            linear-gradient(
+                135deg,
+                #090d24,
+                #17113a 50%,
+                #111827
+            );
+
+        box-shadow:
+            0 25px 70px rgba(15,23,42,.18);
+    }
+
+    .profile-hero::before {
+        content: "";
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        border: 1px solid rgba(255,255,255,.08);
+        border-radius: 50%;
+        right: -80px;
+        top: -160px;
+    }
+
+    .profile-hero::after {
+        content: "";
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        border: 1px solid rgba(255,255,255,.06);
+        border-radius: 50%;
+        right: 120px;
+        bottom: -120px;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .ai-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+
+        padding: 7px 12px;
+        border-radius: 30px;
+
+        background: rgba(255,255,255,.08);
+        border: 1px solid rgba(255,255,255,.12);
+
+        font-size: 11px;
+        font-weight: 700;
+
+        color: #c4b5fd;
+
+        margin-bottom: 15px;
+    }
+
+    .ai-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #8b5cf6;
+        box-shadow: 0 0 12px #8b5cf6;
+    }
+
+    .hero-title {
+        font-size: 32px;
+        font-weight: 900;
+        margin-bottom: 8px;
+        letter-spacing: -.7px;
+    }
+
+    .hero-subtitle {
+        color: rgba(255,255,255,.62);
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .hero-actions {
+        position: relative;
+        z-index: 5;
+    }
+
+    .hero-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+
+        padding: 12px 18px;
+
+        border-radius: 13px;
+
+        background: white;
+        color: #4f46e5;
+
+        text-decoration: none;
+
+        font-size: 13px;
+        font-weight: 800;
+
+        transition: .25s;
+    }
+
+    .hero-btn:hover {
+        color: #4338ca;
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(0,0,0,.2);
+    }
+
+
+    /* MAIN CARD */
+
+    .premium-card {
+        border: 0;
+        border-radius: 22px;
+        background: var(--bs-body-bg, #fff);
+
+        box-shadow:
+            0 8px 35px rgba(15,23,42,.07);
+
+        overflow: hidden;
+
+        transition: .25s;
+    }
+
+    .premium-card:hover {
+        box-shadow:
+            0 15px 45px rgba(15,23,42,.10);
+    }
+
+
+    /* PROFILE */
+
+    .profile-card {
+        padding: 28px;
+        text-align: center;
+    }
+
+    .avatar-container {
+        position: relative;
+        width: 125px;
+        height: 125px;
+        margin: auto;
+    }
+
+    .avatar {
+        width: 125px;
+        height: 125px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+
+        font-size: 44px;
+        font-weight: 900;
+
+        color: white;
+
+        background:
+            linear-gradient(
+                135deg,
+                #6366f1,
+                #8b5cf6,
+                #a855f7
+            );
+
+        border: 5px solid rgba(99,102,241,.12);
+
+        box-shadow:
+            0 18px 40px rgba(99,102,241,.3);
+    }
+
+    .online {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+
+        right: 3px;
+        bottom: 10px;
+
+        background: #22c55e;
+        border: 4px solid white;
+        border-radius: 50%;
+    }
+
+    .profile-name {
+        font-size: 23px;
+        font-weight: 900;
+        margin-top: 18px;
+        margin-bottom: 4px;
+    }
+
+    .profile-username {
+        color: #94a3b8;
+        font-size: 13px;
+    }
+
+    .profile-email {
+        color: #64748b;
+        font-size: 12px;
+        margin-top: 8px;
+        word-break: break-word;
+    }
+
+
+    /* COMPLETION */
+
+    .completion {
+        margin-top: 25px;
+        padding: 17px;
+
+        border-radius: 16px;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(99,102,241,.08),
+                rgba(139,92,246,.04)
+            );
+    }
+
+    .completion-top {
+        display: flex;
+        justify-content: space-between;
+
+        font-size: 12px;
+        margin-bottom: 9px;
+    }
+
+    .completion-value {
+        color: #6366f1;
+        font-weight: 900;
+    }
+
+    .completion .progress {
+        height: 8px;
+        border-radius: 20px;
+        background: #e5e7eb;
+    }
+
+    .completion .progress-bar {
+        border-radius: 20px;
+
+        background:
+            linear-gradient(
+                90deg,
+                #6366f1,
+                #8b5cf6
+            );
+    }
+
+
+    /* STATISTICS */
+
+    .stat {
+        padding: 22px;
+        border-radius: 19px;
+
+        background: var(--bs-body-bg, #fff);
+
+        box-shadow:
+            0 7px 28px rgba(15,23,42,.06);
+
+        height: 100%;
+
+        transition: .25s;
+    }
+
+    .stat:hover {
+        transform: translateY(-4px);
+    }
+
+    .stat-icon {
+        width: 46px;
+        height: 46px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 13px;
+
+        font-size: 20px;
+
+        margin-bottom: 15px;
+    }
+
+    .purple {
+        color: #6366f1;
+        background: rgba(99,102,241,.10);
+    }
+
+    .green {
+        color: #16a34a;
+        background: rgba(22,163,74,.10);
+    }
+
+    .orange {
+        color: #f59e0b;
+        background: rgba(245,158,11,.10);
+    }
+
+    .blue {
+        color: #2563eb;
+        background: rgba(37,99,235,.10);
+    }
+
+    .stat-label {
+        color: #64748b;
+        font-size: 12px;
+    }
+
+    .stat-number {
+        font-size: 29px;
+        font-weight: 900;
+        margin-top: 4px;
+    }
+
+
+    /* AI SCORE */
+
+    .ai-score {
+        padding: 25px;
+
+        border-radius: 21px;
+
+        color: white;
+
+        background:
+            radial-gradient(
+                circle at 100% 0,
+                rgba(139,92,246,.4),
+                transparent 35%
+            ),
+            linear-gradient(
+                135deg,
+                #111827,
+                #211545
+            );
+
+        box-shadow:
+            0 15px 40px rgba(15,23,42,.15);
+    }
+
+    .score-circle {
+        width: 105px;
+        height: 105px;
+
+        border-radius: 50%;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        border: 7px solid rgba(139,92,246,.3);
+
+        background: rgba(255,255,255,.05);
+    }
+
+    .score-number {
+        font-size: 27px;
+        font-weight: 900;
+    }
+
+    .score-label {
+        font-size: 9px;
+        color: rgba(255,255,255,.55);
+    }
+
+    .score-title {
+        font-size: 18px;
+        font-weight: 900;
+    }
+
+    .score-description {
+        color: rgba(255,255,255,.58);
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+
+    /* INFO */
+
+    .section-title {
+        font-size: 18px;
+        font-weight: 900;
+    }
+
+    .section-subtitle {
+        color: #94a3b8;
+        font-size: 11px;
+    }
+
+    .info-box {
+        padding: 16px;
+        border-radius: 14px;
+
+        background: rgba(100,116,139,.05);
+
+        height: 100%;
+    }
+
+    .info-label {
+        color: #94a3b8;
+        font-size: 10px;
+        margin-bottom: 6px;
+    }
+
+    .info-value {
+        color: #1e293b;
+        font-size: 13px;
+        font-weight: 800;
+
+        word-break: break-word;
+    }
+
+
+    /* QUICK ACTIONS */
+
+    .action {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        padding: 14px;
+
+        border-radius: 14px;
+
+        text-decoration: none;
+        color: inherit;
+
+        background: rgba(100,116,139,.05);
+
+        transition: .25s;
+    }
+
+    .action:hover {
+        color: #6366f1;
+        background: rgba(99,102,241,.08);
+        transform: translateX(4px);
+    }
+
+    .action-icon {
+        width: 40px;
+        height: 40px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 11px;
+
+        color: #6366f1;
+        background: rgba(99,102,241,.10);
+    }
+
+    .action-title {
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .action-text {
+        color: #94a3b8;
+        font-size: 10px;
+    }
+
+
+    /* SECURITY */
+
+    .security {
+        padding: 20px;
+
+        border-radius: 17px;
+
+        border: 1px solid rgba(99,102,241,.12);
+
+        background:
+            rgba(99,102,241,.035);
+    }
+
+    .security-icon {
+        width: 45px;
+        height: 45px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 12px;
+
+        color: #6366f1;
+        background: rgba(99,102,241,.10);
+    }
+
+
+    /* RESPONSIVE */
+
+    @media(max-width: 768px) {
+
+        .profile-hero {
+            padding: 25px;
+        }
+
+        .hero-title {
+            font-size: 25px;
+        }
+
+        .hero-actions {
+            margin-top: 18px;
+        }
+
+        .hero-btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .profile-card {
+            padding: 22px;
+        }
+    }
+
+</style>
+
+
+<div class="container-fluid profile-page">
+
+
+    <!-- =========================================
+         HERO
+    ========================================== -->
+
+    <div class="profile-hero">
+
+        <div class="row align-items-center">
+
+            <div class="col-lg-8">
+
+                <div class="hero-content">
+
+                    <div class="ai-badge">
+
+                        <span class="ai-dot"></span>
+
+                        AI STUDY HUB
+
+                    </div>
+
+                    <h1 class="hero-title">
+
+                        Your Learning Profile
+
+                    </h1>
+
+                    <p class="hero-subtitle">
+
+                        Track your progress, manage your account
+                        and continue your learning journey.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-4 text-lg-end">
+
+                <div class="hero-actions">
+
+                    <a
+                        href="{% url 'profile_edit' %}"
+                        class="hero-btn">
+
+                        <i class="bi bi-pencil-square"></i>
+
+                        Edit Profile
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="row g-4">
+
+
+        <!-- =========================================
+             LEFT
+        ========================================== -->
+
+        <div class="col-12 col-xl-4">
+
+
+            <!-- PROFILE -->
+
+            <div class="premium-card">
+
+                <div class="profile-card">
+
+
+                    <div class="avatar-container">
+
+                        <div class="avatar">
+
+                            {{ profile_user.first_name|first|default:profile_user.username|first|upper }}
+
+                        </div>
+
+                        <div class="online"></div>
+
+                    </div>
+
+
+                    <div class="profile-name">
+
+                        {% if profile_user.get_full_name %}
+
+                            {{ profile_user.get_full_name }}
+
+                        {% else %}
+
+                            {{ profile_user.username }}
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="profile-username">
+
+                        @{{ profile_user.username }}
+
+                    </div>
+
+
+                    <div class="profile-email">
+
+                        <i class="bi bi-envelope me-1"></i>
+
+                        {{ profile_user.email|default:"No email added" }}
+
+                    </div>
+
+
+                    <!-- COMPLETION -->
+
+                    <div class="completion">
+
+                        <div class="completion-top">
+
+                            <span>
+                                Profile Completion
+                            </span>
+
+                            <span class="completion-value">
+
+                                {% if profile_user.first_name and profile_user.last_name and profile_user.email %}
+                                    100%
+                                {% elif profile_user.first_name or profile_user.last_name or profile_user.email %}
+                                    75%
+                                {% else %}
+                                    40%
+                                {% endif %}
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="progress">
+
+                            <div
+                                class="progress-bar"
+                                style="width:
+                                {% if profile_user.first_name and profile_user.last_name and profile_user.email %}
+                                    100%
+                                {% elif profile_user.first_name or profile_user.last_name or profile_user.email %}
+                                    75%
+                                {% else %}
+                                    40%
+                                {% endif %}
+                                ">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- QUICK ACTIONS -->
+
+            <div class="premium-card mt-4">
+
+                <div class="p-4">
+
+                    <div class="section-title mb-1">
+                        Quick Actions
+                    </div>
+
+                    <div class="section-subtitle mb-3">
+                        Manage your account
+                    </div>
+
+
+                    <div class="d-grid gap-2">
+
+
+                        <a
+                            href="{% url 'profile_edit' %}"
+                            class="action">
+
+                            <div class="action-icon">
+
+                                <i class="bi bi-person-gear"></i>
+
+                            </div>
+
+                            <div class="flex-grow-1">
+
+                                <div class="action-title">
+                                    Edit Profile
+                                </div>
+
+                                <div class="action-text">
+                                    Update personal information
+                                </div>
+
+                            </div>
+
+                            <i class="bi bi-chevron-right"></i>
+
+                        </a>
+
+
+                        <a
+                            href="{% url 'change_password' %}"
+                            class="action">
+
+                            <div class="action-icon">
+
+                                <i class="bi bi-shield-lock"></i>
+
+                            </div>
+
+                            <div class="flex-grow-1">
+
+                                <div class="action-title">
+                                    Change Password
+                                </div>
+
+                                <div class="action-text">
+                                    Secure your account
+                                </div>
+
+                            </div>
+
+                            <i class="bi bi-chevron-right"></i>
+
+                        </a>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =========================================
+             RIGHT
+        ========================================== -->
+
+        <div class="col-12 col-xl-8">
+
+
+            <!-- STATISTICS -->
+
+            <div class="row g-3 mb-4">
+
+
+                <div class="col-6 col-lg-3">
+
+                    <div class="stat">
+
+                        <div class="stat-icon purple">
+
+                            <i class="bi bi-check2-square"></i>
+
+                        </div>
+
+                        <div class="stat-label">
+                            Total Tasks
+                        </div>
+
+                        <div class="stat-number">
+
+                            {{ total_tasks|default:"0" }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-6 col-lg-3">
+
+                    <div class="stat">
+
+                        <div class="stat-icon green">
+
+                            <i class="bi bi-journal-text"></i>
+
+                        </div>
+
+                        <div class="stat-label">
+                            Study Notes
+                        </div>
+
+                        <div class="stat-number">
+
+                            {{ total_notes|default:"0" }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-6 col-lg-3">
+
+                    <div class="stat">
+
+                        <div class="stat-icon orange">
+
+                            <i class="bi bi-folder2-open"></i>
+
+                        </div>
+
+                        <div class="stat-label">
+                            Resources
+                        </div>
+
+                        <div class="stat-number">
+
+                            {{ total_resources|default:"0" }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-6 col-lg-3">
+
+                    <div class="stat">
+
+                        <div class="stat-icon blue">
+
+                            <i class="bi bi-stars"></i>
+
+                        </div>
+
+                        <div class="stat-label">
+                            AI Sessions
+                        </div>
+
+                        <div class="stat-number">
+
+                            {{ ai_sessions|default:"0" }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- AI LEARNING SCORE -->
+
+            <div class="ai-score mb-4">
+
+                <div class="row align-items-center">
+
+                    <div class="col-md-auto text-center mb-3 mb-md-0">
+
+                        <div class="score-circle">
+
+                            <div class="score-number">
+
+                                {{ learning_score|default:"85" }}
+
+                            </div>
+
+                            <div class="score-label">
+                                AI SCORE
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col">
+
+                        <div class="score-title">
+
+                            🧠 Your AI Learning Score
+
+                        </div>
+
+                        <p class="score-description">
+
+                            Your learning score represents your activity
+                            across tasks, notes, resources and AI sessions.
+                            Keep studying consistently to improve your score.
+
+                        </p>
+
+
+                        <div class="progress mt-3"
+                             style="height:7px;background:rgba(255,255,255,.1);">
+
+                            <div
+                                class="progress-bar"
+                                style="
+                                    width: {{ learning_score|default:'85' }}%;
+                                    background:linear-gradient(
+                                        90deg,
+                                        #6366f1,
+                                        #a855f7
+                                    );
+                                ">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ACCOUNT INFORMATION -->
+
+            <div class="premium-card mb-4">
+
+                <div class="p-4">
+
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+
+                        <div>
+
+                            <div class="section-title">
+                                Account Information
+                            </div>
+
+                            <div class="section-subtitle">
+                                Your personal account details
+                            </div>
+
+                        </div>
+
+                        <i class="bi bi-person-vcard fs-4 text-primary"></i>
+
+                    </div>
+
+
+                    <div class="row g-3">
+
+
+                        <div class="col-md-6">
+
+                            <div class="info-box">
+
+                                <div class="info-label">
+                                    <i class="bi bi-at"></i>
+                                    USERNAME
+                                </div>
+
+                                <div class="info-value">
+
+                                    {{ profile_user.username }}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <div class="info-box">
+
+                                <div class="info-label">
+                                    <i class="bi bi-envelope"></i>
+                                    EMAIL
+                                </div>
+
+                                <div class="info-value">
+
+                                    {{ profile_user.email|default:"Not set" }}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <div class="info-box">
+
+                                <div class="info-label">
+                                    <i class="bi bi-person"></i>
+                                    FIRST NAME
+                                </div>
+
+                                <div class="info-value">
+
+                                    {{ profile_user.first_name|default:"Not set" }}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <div class="info-box">
+
+                                <div class="info-label">
+                                    <i class="bi bi-person"></i>
+                                    LAST NAME
+                                </div>
+
+                                <div class="info-value">
+
+                                    {{ profile_user.last_name|default:"Not set" }}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <div class="info-box">
+
+                                <div class="info-label">
+                                    <i class="bi bi-calendar3"></i>
+                                    MEMBER SINCE
+                                </div>
+
+                                <div class="info-value">
+
+                                    {{ profile_user.date_joined|date:"F d, Y" }}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <div class="info-box">
+
+                                <div class="info-label">
+                                    <i class="bi bi-clock"></i>
+                                    LAST LOGIN
+                                </div>
+
+                                <div class="info-value">
+
+                                    {% if profile_user.last_login %}
+
+                                        {{ profile_user.last_login|date:"F d, Y - h:i A" }}
+
+                                    {% else %}
+
+                                        Never
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- SECURITY -->
+
+            <div class="premium-card">
+
+                <div class="p-4">
+
+                    <div class="security">
+
+                        <div class="d-flex align-items-center gap-3">
+
+                            <div class="security-icon">
+
+                                <i class="bi bi-shield-check"></i>
+
+                            </div>
+
+                            <div class="flex-grow-1">
+
+                                <div class="fw-bold">
+
+                                    Account Security
+
+                                </div>
+
+                                <div class="text-muted small">
+
+                                    Protect your AI Study Hub account
+                                    with a strong password.
+
+                                </div>
+
+                            </div>
+
+                            <a
+                                href="{% url 'change_password' %}"
+                                class="btn btn-outline-primary btn-sm">
+
+                                <i class="bi bi-key me-1"></i>
+
+                                Change Password
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

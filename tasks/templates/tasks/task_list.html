@@ -1,0 +1,389 @@
+{% extends "base.html" %}
+
+{% block title %}
+Study Planner | AI Study Hub
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold mb-1">
+                Study Planner
+            </h2>
+
+            <p class="text-muted mb-0">
+                Organize your study tasks and stay productive.
+            </p>
+        </div>
+
+        <a
+            href="{% url 'task_create' %}"
+            class="btn btn-primary">
+
+            <i class="bi bi-plus-lg"></i>
+            Add Task
+
+        </a>
+
+    </div>
+
+
+    <!-- Filters -->
+
+    <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <form
+                method="GET"
+                class="row g-3">
+
+                <div class="col-12 col-lg-5">
+
+                    <label class="form-label">
+                        Search
+                    </label>
+
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ search }}"
+                        class="form-control"
+                        placeholder="Search tasks...">
+
+                </div>
+
+
+                <div class="col-12 col-md-6 col-lg-3">
+
+                    <label class="form-label">
+                        Status
+                    </label>
+
+                    <select
+                        name="status"
+                        class="form-select">
+
+                        <option value="">
+                            All Statuses
+                        </option>
+
+                        {% for value, label in status_choices %}
+
+                        <option
+                            value="{{ value }}"
+                            {% if selected_status == value %}
+                                selected
+                            {% endif %}>
+
+                            {{ label }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <div class="col-12 col-md-6 col-lg-2">
+
+                    <label class="form-label">
+                        Priority
+                    </label>
+
+                    <select
+                        name="priority"
+                        class="form-select">
+
+                        <option value="">
+                            All
+                        </option>
+
+                        {% for value, label in priority_choices %}
+
+                        <option
+                            value="{{ value }}"
+                            {% if selected_priority == value %}
+                                selected
+                            {% endif %}>
+
+                            {{ label }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <div class="col-12 col-lg-2 d-flex align-items-end">
+
+                    <button
+                        class="btn btn-dark w-100">
+
+                        <i class="bi bi-funnel"></i>
+                        Filter
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- Tasks -->
+
+    <div class="row g-4">
+
+        {% for task in page_obj %}
+
+        <div class="col-12 col-md-6 col-xl-4">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between mb-3">
+
+                        <span class="badge
+                            {% if task.priority == 'HIGH' %}
+                                bg-danger
+                            {% elif task.priority == 'MEDIUM' %}
+                                bg-warning text-dark
+                            {% else %}
+                                bg-success
+                            {% endif %}
+                        ">
+
+                            {{ task.get_priority_display }}
+
+                        </span>
+
+
+                        {% if task.status == "COMPLETED" %}
+
+                        <span class="badge bg-success-subtle text-success">
+
+                            <i class="bi bi-check-circle"></i>
+
+                            Completed
+
+                        </span>
+
+                        {% elif task.status == "IN_PROGRESS" %}
+
+                        <span class="badge bg-info-subtle text-info">
+
+                            In Progress
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge bg-secondary-subtle text-secondary">
+
+                            Pending
+
+                        </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <h5 class="fw-bold">
+                        {{ task.title }}
+                    </h5>
+
+
+                    <p class="text-muted">
+
+                        {{ task.description|truncatewords:20 }}
+
+                    </p>
+
+
+                    <div class="small text-muted mb-3">
+
+                        <i class="bi bi-calendar3"></i>
+
+                        {% if task.due_date %}
+
+                            {{ task.due_date|date:"M d, Y - h:i A" }}
+
+                        {% else %}
+
+                            No due date
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="d-flex gap-2">
+
+                        <form
+                            method="POST"
+                            action="{% url 'task_complete' task.pk %}">
+
+                            {% csrf_token %}
+
+                            <button
+                                class="btn btn-sm btn-success">
+
+                                {% if task.status == "COMPLETED" %}
+                                    Undo
+                                {% else %}
+                                    Complete
+                                {% endif %}
+
+                            </button>
+
+                        </form>
+
+
+                        <a
+                            href="{% url 'task_update' task.pk %}"
+                            class="btn btn-sm btn-outline-primary">
+
+                            <i class="bi bi-pencil"></i>
+
+                        </a>
+
+
+                        <a
+                            href="{% url 'task_delete' task.pk %}"
+                            class="btn btn-sm btn-outline-danger">
+
+                            <i class="bi bi-trash"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="col-12">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body text-center py-5">
+
+                    <i class="bi bi-clipboard-x fs-1 text-muted"></i>
+
+                    <h5 class="mt-3">
+                        No tasks found
+                    </h5>
+
+                    <p class="text-muted">
+                        Start by creating your first study task.
+                    </p>
+
+                    <a
+                        href="{% url 'task_create' %}"
+                        class="btn btn-primary">
+
+                        Create Task
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- Pagination -->
+
+    {% if page_obj.has_other_pages %}
+
+    <nav class="mt-5">
+
+        <ul class="pagination justify-content-center">
+
+            {% if page_obj.has_previous %}
+
+            <li class="page-item">
+
+                <a
+                    class="page-link"
+                    href="?page={{ page_obj.previous_page_number }}&search={{ search }}&status={{ selected_status }}&priority={{ selected_priority }}">
+
+                    Previous
+
+                </a>
+
+            </li>
+
+            {% endif %}
+
+
+            {% for num in page_obj.paginator.page_range %}
+
+            <li
+                class="page-item
+                {% if page_obj.number == num %}
+                    active
+                {% endif %}">
+
+                <a
+                    class="page-link"
+                    href="?page={{ num }}&search={{ search }}&status={{ selected_status }}&priority={{ selected_priority }}">
+
+                    {{ num }}
+
+                </a>
+
+            </li>
+
+            {% endfor %}
+
+
+            {% if page_obj.has_next %}
+
+            <li class="page-item">
+
+                <a
+                    class="page-link"
+                    href="?page={{ page_obj.next_page_number }}&search={{ search }}&status={{ selected_status }}&priority={{ selected_priority }}">
+
+                    Next
+
+                </a>
+
+            </li>
+
+            {% endif %}
+
+        </ul>
+
+    </nav>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

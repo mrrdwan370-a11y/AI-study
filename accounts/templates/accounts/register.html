@@ -1,0 +1,879 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Create Account | AI Study Hub</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- Google Font -->
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+
+            font-family: 'Inter', sans-serif;
+
+            min-height: 100vh;
+
+            color: #ffffff;
+
+            background:
+                radial-gradient(
+                    circle at 10% 15%,
+                    rgba(99, 102, 241, 0.25),
+                    transparent 30%
+                ),
+
+                radial-gradient(
+                    circle at 90% 85%,
+                    rgba(139, 92, 246, 0.22),
+                    transparent 30%
+                ),
+
+                #070914;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 30px 15px;
+
+            overflow-x: hidden;
+        }
+
+
+        /* =========================
+           BACKGROUND
+        ========================= */
+
+        .orb {
+
+            position: fixed;
+
+            border-radius: 50%;
+
+            filter: blur(90px);
+
+            opacity: .35;
+
+            z-index: -1;
+        }
+
+
+        .orb-one {
+
+            width: 320px;
+            height: 320px;
+
+            background: #6366f1;
+
+            top: -120px;
+            left: -120px;
+        }
+
+
+        .orb-two {
+
+            width: 350px;
+            height: 350px;
+
+            background: #8b5cf6;
+
+            bottom: -150px;
+            right: -120px;
+        }
+
+
+        /* =========================
+           WRAPPER
+        ========================= */
+
+        .register-wrapper {
+
+            width: 100%;
+
+            max-width: 1100px;
+        }
+
+
+        /* =========================
+           CARD
+        ========================= */
+
+        .register-card {
+
+            display: grid;
+
+            grid-template-columns: 0.95fr 1.05fr;
+
+            min-height: 650px;
+
+            background:
+                rgba(255,255,255,.055);
+
+            border:
+
+                1px solid
+                rgba(255,255,255,.11);
+
+            border-radius: 28px;
+
+            overflow: hidden;
+
+            backdrop-filter: blur(25px);
+
+            -webkit-backdrop-filter: blur(25px);
+
+            box-shadow:
+
+                0 30px 90px
+                rgba(0,0,0,.55);
+        }
+
+
+        /* =========================
+           LEFT SIDE
+        ========================= */
+
+        .register-info {
+
+            padding: 55px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+            background:
+
+                linear-gradient(
+                    145deg,
+                    rgba(99,102,241,.18),
+                    rgba(10,13,25,.20)
+                );
+        }
+
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+
+            margin-bottom: 35px;
+        }
+
+
+        .brand-icon {
+
+            width: 58px;
+            height: 58px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 17px;
+
+            font-size: 27px;
+
+            background:
+
+                linear-gradient(
+                    135deg,
+                    #6366f1,
+                    #8b5cf6
+                );
+
+            box-shadow:
+
+                0 15px 35px
+                rgba(99,102,241,.35);
+        }
+
+
+        .brand-name {
+
+            font-size: 19px;
+
+            font-weight: 800;
+        }
+
+
+        .brand-name span {
+
+            color: #818cf8;
+        }
+
+
+        .register-info h1 {
+
+            font-size: 43px;
+
+            line-height: 1.1;
+
+            font-weight: 800;
+
+            margin-bottom: 20px;
+        }
+
+
+        .register-info h1 span {
+
+            color: #818cf8;
+        }
+
+
+        .register-info > p {
+
+            color: #a7aec0;
+
+            line-height: 1.8;
+
+            font-size: 14px;
+
+            max-width: 430px;
+        }
+
+
+        /* FEATURES */
+
+        .features {
+
+            margin-top: 35px;
+        }
+
+
+        .feature {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 13px;
+
+            margin-bottom: 17px;
+
+            color: #d9ddea;
+
+            font-size: 14px;
+        }
+
+
+        .feature-icon {
+
+            width: 34px;
+            height: 34px;
+
+            flex-shrink: 0;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 10px;
+
+            background:
+                rgba(99,102,241,.15);
+
+            color: #818cf8;
+
+            font-weight: 700;
+        }
+
+
+        /* =========================
+           RIGHT SIDE
+        ========================= */
+
+        .register-form-section {
+
+            padding: 50px 55px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+            background:
+
+                rgba(4,7,15,.32);
+        }
+
+
+        .form-header {
+
+            margin-bottom: 28px;
+        }
+
+
+        .form-header h2 {
+
+            font-size: 30px;
+
+            font-weight: 800;
+
+            margin-bottom: 8px;
+        }
+
+
+        .form-header p {
+
+            color: #8992a7;
+
+            font-size: 14px;
+        }
+
+
+        /* =========================
+           DJANGO ERRORS
+        ========================= */
+
+        .alert-error {
+
+            padding: 13px 15px;
+
+            margin-bottom: 20px;
+
+            border-radius: 12px;
+
+            background:
+
+                rgba(239,68,68,.10);
+
+            border:
+
+                1px solid
+                rgba(239,68,68,.25);
+
+            color: #fca5a5;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+        }
+
+
+        .errorlist {
+
+            list-style: none;
+
+            padding: 0;
+
+            margin: 7px 0 0;
+
+            color: #f87171;
+
+            font-size: 12px;
+        }
+
+
+        /* =========================
+           FORM
+        ========================= */
+
+        form p {
+
+            margin-bottom: 17px;
+        }
+
+
+        form label {
+
+            display: block;
+
+            color: #dce1ed;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            margin-bottom: 8px;
+        }
+
+
+        form input {
+
+            width: 100%;
+
+            padding: 13px 15px;
+
+            border-radius: 12px;
+
+            border:
+
+                1px solid
+                rgba(255,255,255,.12);
+
+            background:
+
+                rgba(255,255,255,.045);
+
+            color: #ffffff;
+
+            outline: none;
+
+            font-size: 14px;
+
+            transition: .3s;
+        }
+
+
+        form input:hover {
+
+            border-color:
+
+                rgba(129,140,248,.35);
+        }
+
+
+        form input:focus {
+
+            border-color: #818cf8;
+
+            background:
+
+                rgba(255,255,255,.07);
+
+            box-shadow:
+
+                0 0 0 4px
+                rgba(99,102,241,.10);
+        }
+
+
+        form input::placeholder {
+
+            color: #626b80;
+        }
+
+
+        /* Password input */
+
+        input[type="password"] {
+
+            letter-spacing: .5px;
+        }
+
+
+        /* =========================
+           PASSWORD HELP
+        ========================= */
+
+        form p:has(input[name="password1"]) .helptext,
+        form p:has(input[name="password2"]) .helptext {
+
+            display: block;
+
+            margin-top: 7px;
+
+            color: #6f7890;
+
+            font-size: 11px;
+
+            line-height: 1.6;
+        }
+
+
+        .helptext ul {
+
+            padding-left: 18px;
+
+            margin-top: 5px;
+        }
+
+
+        /* =========================
+           BUTTON
+        ========================= */
+
+        .register-btn {
+
+            width: 100%;
+
+            border: none;
+
+            padding: 15px;
+
+            border-radius: 13px;
+
+            background:
+
+                linear-gradient(
+                    135deg,
+                    #6366f1,
+                    #8b5cf6
+                );
+
+            color: white;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            box-shadow:
+
+                0 14px 30px
+                rgba(99,102,241,.25);
+
+            transition: .3s;
+        }
+
+
+        .register-btn:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+
+                0 20px 38px
+                rgba(99,102,241,.35);
+        }
+
+
+        .register-btn:active {
+
+            transform: translateY(0);
+        }
+
+
+        /* =========================
+           LOGIN LINK
+        ========================= */
+
+        .login-link {
+
+            text-align: center;
+
+            margin-top: 22px;
+
+            color: #858da1;
+
+            font-size: 13px;
+        }
+
+
+        .login-link a {
+
+            color: #818cf8;
+
+            font-weight: 700;
+
+            text-decoration: none;
+        }
+
+
+        .login-link a:hover {
+
+            text-decoration: underline;
+        }
+
+
+        /* =========================
+           SECURITY
+        ========================= */
+
+        .security {
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            gap: 7px;
+
+            margin-top: 22px;
+
+            color: #5e677c;
+
+            font-size: 11px;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media(max-width: 850px) {
+
+            .register-card {
+
+                grid-template-columns: 1fr;
+            }
+
+            .register-info {
+
+                display: none;
+            }
+
+            .register-form-section {
+
+                padding: 45px 30px;
+            }
+        }
+
+
+        @media(max-width: 480px) {
+
+            body {
+
+                padding: 15px;
+            }
+
+            .register-card {
+
+                border-radius: 20px;
+            }
+
+            .register-form-section {
+
+                padding: 35px 22px;
+            }
+
+            .form-header h2 {
+
+                font-size: 26px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- Background -->
+
+<div class="orb orb-one"></div>
+<div class="orb orb-two"></div>
+
+
+<div class="register-wrapper">
+
+
+    <div class="register-card">
+
+
+        <!-- =========================
+             LEFT
+        ========================= -->
+
+        <div class="register-info">
+
+
+            <div class="brand">
+
+                <div class="brand-icon">
+                    🤖
+                </div>
+
+                <div class="brand-name">
+                    AI <span>Study Hub</span>
+                </div>
+
+            </div>
+
+
+            <h1>
+
+                Start Your
+                <span>Learning Journey.</span>
+
+            </h1>
+
+
+            <p>
+
+                Create your account and unlock a smarter
+                way to learn with AI-powered study tools,
+                personalized learning and progress tracking.
+
+            </p>
+
+
+            <div class="features">
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        ✓
+                    </div>
+
+                    <span>
+                        AI-powered study assistance
+                    </span>
+
+                </div>
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        ✓
+                    </div>
+
+                    <span>
+                        Personalized learning experience
+                    </span>
+
+                </div>
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        ✓
+                    </div>
+
+                    <span>
+                        Track your learning progress
+                    </span>
+
+                </div>
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        ✓
+                    </div>
+
+                    <span>
+                        Secure account authentication
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =========================
+             RIGHT
+        ========================= -->
+
+        <div class="register-form-section">
+
+
+            <div class="form-header">
+
+                <h2>
+                    Create Account 🚀
+                </h2>
+
+                <p>
+                    Join AI Study Hub and start learning smarter.
+                </p>
+
+            </div>
+
+
+            <!-- Django Non Field Errors -->
+
+            {% if form.non_field_errors %}
+
+                <div class="alert-error">
+
+                    {{ form.non_field_errors }}
+
+                </div>
+
+            {% endif %}
+
+
+            <!-- Register Form -->
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+
+                {{ form.as_p }}
+
+
+                <button
+                    type="submit"
+                    class="register-btn">
+
+                    Create My Account →
+
+                </button>
+
+            </form>
+
+
+            <div class="login-link">
+
+                Already have an account?
+
+                <a href="{% url 'login' %}">
+                    Sign in
+                </a>
+
+            </div>
+
+
+            <div class="security">
+
+                🔒 Your account information is securely protected
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+</body>
+
+</html>

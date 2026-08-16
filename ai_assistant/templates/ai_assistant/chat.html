@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}
+AI Study Assistant
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="row g-4">
+
+        <!-- Chat Sessions -->
+
+        <div class="col-lg-3">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+
+                        <h5 class="fw-bold mb-0">
+                            AI Chats
+                        </h5>
+
+                        <a
+                            href="{% url 'ai_chat' %}"
+                            class="btn btn-sm btn-primary">
+
+                            <i class="bi bi-plus"></i>
+
+                        </a>
+
+                    </div>
+
+
+                    <div class="list-group">
+
+                        {% for item in sessions %}
+
+                        <a
+                            href="?session={{ item.id }}"
+                            class="list-group-item list-group-item-action
+                            {% if item.id == session.id %}
+                                active
+                            {% endif %}">
+
+                            <div class="fw-semibold">
+
+                                {{ item.title|truncatechars:30 }}
+
+                            </div>
+
+                            <small>
+
+                                {{ item.updated_at|date:"M d, Y" }}
+
+                            </small>
+
+                        </a>
+
+                        {% empty %}
+
+                        <p class="text-muted">
+                            No conversations yet.
+                        </p>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- AI Chat -->
+
+        <div class="col-lg-9">
+
+            <div class="card border-0 shadow-sm">
+
+                <!-- Header -->
+
+                <div class="card-header bg-transparent p-3">
+
+                    <div class="d-flex align-items-center gap-3">
+
+                        <div
+                            class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                            style="width:45px;height:45px;">
+
+                            <i class="bi bi-robot fs-4"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h5 class="fw-bold mb-0">
+                                AI Study Assistant
+                            </h5>
+
+                            <small class="text-muted">
+                                Your personal learning assistant
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Messages -->
+
+                <div
+                    id="chatMessages"
+                    class="card-body"
+                    style="height:550px; overflow-y:auto;">
+
+                    {% for message in messages %}
+
+                    {% if message.role == "user" %}
+
+                    <div class="d-flex justify-content-end mb-3">
+
+                        <div
+                            class="bg-primary text-white rounded-4 p-3"
+                            style="max-width:75%;">
+
+                            {{ message.content|linebreaks }}
+
+                        </div>
+
+                    </div>
+
+                    {% else %}
+
+                    <div class="d-flex justify-content-start mb-3">
+
+                        <div
+                            class="bg-light rounded-4 p-3"
+                            style="max-width:75%;">
+
+                            <div class="fw-bold mb-1">
+
+                                <i class="bi bi-robot"></i>
+
+                                AI Assistant
+
+                            </div>
+
+                            {{ message.content|linebreaks }}
+
+                        </div>
+
+                    </div>
+
+                    {% endif %}
+
+                    {% empty %}
+
+                    <div class="text-center py-5">
+
+                        <i class="bi bi-robot fs-1 text-primary"></i>
+
+                        <h4 class="fw-bold mt-3">
+                            Hello! 👋
+                        </h4>
+
+                        <p class="text-muted">
+                            I'm your AI Study Assistant.
+                            Ask me anything about your studies.
+                        </p>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- Input -->
+
+                <div class="card-footer bg-transparent">
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <div class="input-group">
+
+                            {{ form.message }}
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary px-4">
+
+                                <i class="bi bi-send"></i>
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
