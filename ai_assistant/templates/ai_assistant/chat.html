@@ -6,206 +6,498 @@ AI Study Assistant
 
 {% block content %}
 
+<style>
+
+    /* ==============================
+       Chat Layout
+    ============================== */
+
+    .chat-wrapper {
+        position: relative;
+    }
+
+
+    /* ==============================
+       Chat Sidebar
+    ============================== */
+
+    .chat-sidebar {
+        position: fixed;
+        top: 0;
+        left: -320px;
+
+        width: 320px;
+        height: 100vh;
+
+        background: white;
+
+        z-index: 1050;
+
+        box-shadow: 5px 0 20px rgba(0, 0, 0, 0.12);
+
+        transition: left 0.3s ease;
+
+        overflow-y: auto;
+    }
+
+
+    .chat-sidebar.show {
+        left: 0;
+    }
+
+
+    /* ==============================
+       Sidebar Overlay
+    ============================== */
+
+    .chat-overlay {
+        position: fixed;
+
+        top: 0;
+        left: 0;
+
+        width: 100%;
+        height: 100vh;
+
+        background: rgba(0, 0, 0, 0.35);
+
+        z-index: 1040;
+
+        display: none;
+    }
+
+
+    .chat-overlay.show {
+        display: block;
+    }
+
+
+    /* ==============================
+       Chat Items
+    ============================== */
+
+    .chat-item {
+        border: 0;
+        border-radius: 10px;
+
+        margin-bottom: 6px;
+
+        transition: 0.2s;
+    }
+
+
+    .chat-item:hover {
+        background: #f1f5ff;
+    }
+
+
+    .chat-item.active {
+        background: #0d6efd;
+        color: white;
+    }
+
+
+    .chat-item.active small {
+        color: rgba(255,255,255,0.8);
+    }
+
+
+    /* ==============================
+       Chat Messages
+    ============================== */
+
+    #chatMessages {
+        height: 550px;
+        overflow-y: auto;
+        scroll-behavior: smooth;
+    }
+
+</style>
+
+
 <div class="container-fluid">
 
-    <div class="row g-4">
+    <div class="chat-wrapper">
 
-        <!-- Chat Sessions -->
+        <!-- =====================================
+             Sidebar
+        ====================================== -->
 
-        <div class="col-lg-3">
+        <div
+            id="chatSidebar"
+            class="chat-sidebar">
 
-            <div class="card border-0 shadow-sm">
+            <!-- Sidebar Header -->
 
-                <div class="card-body">
+            <div class="p-3 border-bottom">
 
-                    <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex justify-content-between align-items-center">
 
-                        <h5 class="fw-bold mb-0">
-                            AI Chats
-                        </h5>
+                    <h5 class="fw-bold mb-0">
 
-                        <a
-                            href="{% url 'ai_chat' %}"
-                            class="btn btn-sm btn-primary">
+                        <i class="bi bi-chat-left-text me-2"></i>
 
-                            <i class="bi bi-plus"></i>
+                        AI Chats
 
-                        </a>
-
-                    </div>
+                    </h5>
 
 
-                    <div class="list-group">
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-light"
+                        id="closeSidebar">
 
-                        {% for item in sessions %}
+                        <i class="bi bi-x-lg"></i>
 
-                        <a
-                            href="?session={{ item.id }}"
-                            class="list-group-item list-group-item-action
-                            {% if item.id == session.id %}
-                                active
-                            {% endif %}">
-
-                            <div class="fw-semibold">
-
-                                {{ item.title|truncatechars:30 }}
-
-                            </div>
-
-                            <small>
-
-                                {{ item.updated_at|date:"M d, Y" }}
-
-                            </small>
-
-                        </a>
-
-                        {% empty %}
-
-                        <p class="text-muted">
-                            No conversations yet.
-                        </p>
-
-                        {% endfor %}
-
-                    </div>
+                    </button>
 
                 </div>
+
+            </div>
+
+
+            <!-- New Chat -->
+
+            <div class="p-3">
+
+                <a
+                    href="{% url 'ai_chat' %}"
+                    class="btn btn-primary w-100">
+
+                    <i class="bi bi-plus-lg me-1"></i>
+
+                    New Chat
+
+                </a>
+
+            </div>
+
+
+            <!-- Old Chats -->
+
+            <div class="px-3 pb-3">
+
+                {% for item in sessions %}
+
+                <div
+                    class="
+                        chat-item
+                        d-flex
+                        align-items-center
+                        justify-content-between
+                        p-2
+                        {% if item.id == session.id %}
+                            active
+                        {% endif %}
+                    ">
+
+
+                    <!-- Open Chat -->
+
+                    <a
+                        href="?session={{ item.id }}"
+                        class="text-decoration-none flex-grow-1
+                        {% if item.id == session.id %}
+                            text-white
+                        {% else %}
+                            text-dark
+                        {% endif %}">
+
+                        <div class="fw-semibold">
+
+                            <i class="bi bi-chat me-1"></i>
+
+                            {{ item.title|truncatechars:25 }}
+
+                        </div>
+
+                        <small
+                            class="
+                            {% if item.id == session.id %}
+                                text-white-50
+                            {% else %}
+                                text-muted
+                            {% endif %}
+                            ">
+
+                            {{ item.updated_at|date:"M d, Y" }}
+
+                        </small>
+
+                    </a>
+
+
+                    <!-- Delete -->
+
+                    <form
+                        method="POST"
+                        action="{% url 'delete_chat' item.id %}"
+                        onsubmit="return confirm('Are you sure you want to delete this chat?');">
+
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="
+                                btn
+                                btn-sm
+                                {% if item.id == session.id %}
+                                    text-white
+                                {% else %}
+                                    text-danger
+                                {% endif %}
+                            "
+                            title="Delete chat">
+
+                            <i class="bi bi-trash"></i>
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+
+                {% empty %}
+
+                <div class="text-center text-muted py-4">
+
+                    <i class="bi bi-chat fs-2"></i>
+
+                    <p class="mt-2 mb-0">
+                        No conversations yet.
+                    </p>
+
+                </div>
+
+                {% endfor %}
 
             </div>
 
         </div>
 
 
-        <!-- AI Chat -->
+        <!-- Sidebar Overlay -->
 
-        <div class="col-lg-9">
-
-            <div class="card border-0 shadow-sm">
-
-                <!-- Header -->
-
-                <div class="card-header bg-transparent p-3">
-
-                    <div class="d-flex align-items-center gap-3">
-
-                        <div
-                            class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
-                            style="width:45px;height:45px;">
-
-                            <i class="bi bi-robot fs-4"></i>
-
-                        </div>
-
-                        <div>
-
-                            <h5 class="fw-bold mb-0">
-                                AI Study Assistant
-                            </h5>
-
-                            <small class="text-muted">
-                                Your personal learning assistant
-                            </small>
-
-                        </div>
-
-                    </div>
-
-                </div>
+        <div
+            id="chatOverlay"
+            class="chat-overlay">
+        </div>
 
 
-                <!-- Messages -->
+        <!-- =====================================
+             Main Chat
+        ====================================== -->
 
-                <div
-                    id="chatMessages"
-                    class="card-body"
-                    style="height:550px; overflow-y:auto;">
+        <div class="row">
 
-                    {% for message in messages %}
+            <div class="col-12">
 
-                    {% if message.role == "user" %}
+                <div class="card border-0 shadow-sm">
 
-                    <div class="d-flex justify-content-end mb-3">
 
-                        <div
-                            class="bg-primary text-white rounded-4 p-3"
-                            style="max-width:75%;">
+                    <!-- =================================
+                         Header
+                    ================================== -->
 
-                            {{ message.content|linebreaks }}
+                    <div class="card-header bg-transparent p-3">
 
-                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
 
-                    </div>
 
-                    {% else %}
+                            <!-- Left -->
 
-                    <div class="d-flex justify-content-start mb-3">
+                            <div class="d-flex align-items-center gap-3">
 
-                        <div
-                            class="bg-light rounded-4 p-3"
-                            style="max-width:75%;">
+                                <!-- Open Sidebar -->
 
-                            <div class="fw-bold mb-1">
+                                <button
+                                    type="button"
+                                    id="openSidebar"
+                                    class="btn btn-light">
 
-                                <i class="bi bi-robot"></i>
+                                    <i class="bi bi-list fs-5"></i>
 
-                                AI Assistant
+                                </button>
+
+
+                                <!-- Robot -->
+
+                                <div
+                                    class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                                    style="width:45px;height:45px;">
+
+                                    <i class="bi bi-robot fs-4"></i>
+
+                                </div>
+
+
+                                <!-- Title -->
+
+                                <div>
+
+                                    <h5 class="fw-bold mb-0">
+
+                                        {% if session %}
+
+                                            {{ session.title|truncatechars:40 }}
+
+                                        {% else %}
+
+                                            AI Study Assistant
+
+                                        {% endif %}
+
+                                    </h5>
+
+                                    <small class="text-muted">
+
+                                        Your personal learning assistant
+
+                                    </small>
+
+                                </div>
 
                             </div>
 
-                            {{ message.content|linebreaks }}
+
+                            <!-- New Chat -->
+
+                            <a
+                                href="{% url 'ai_chat' %}"
+                                class="btn btn-sm btn-primary">
+
+                                <i class="bi bi-plus-lg me-1"></i>
+
+                                New Chat
+
+                            </a>
 
                         </div>
 
                     </div>
 
-                    {% endif %}
 
-                    {% empty %}
+                    <!-- =================================
+                         Messages
+                    ================================== -->
 
-                    <div class="text-center py-5">
-
-                        <i class="bi bi-robot fs-1 text-primary"></i>
-
-                        <h4 class="fw-bold mt-3">
-                            Hello! 👋
-                        </h4>
-
-                        <p class="text-muted">
-                            I'm your AI Study Assistant.
-                            Ask me anything about your studies.
-                        </p>
-
-                    </div>
-
-                    {% endfor %}
-
-                </div>
+                    <div
+                        id="chatMessages"
+                        class="card-body">
 
 
-                <!-- Input -->
+                        {% for message in messages %}
 
-                <div class="card-footer bg-transparent">
 
-                    <form method="POST">
+                            {% if message.role == "user" %}
 
-                        {% csrf_token %}
+                            <!-- User Message -->
 
-                        <div class="input-group">
+                            <div class="d-flex justify-content-end mb-3">
 
-                            {{ form.message }}
+                                <div
+                                    class="bg-primary text-white rounded-4 p-3"
+                                    style="max-width:75%;">
 
-                            <button
-                                type="submit"
-                                class="btn btn-primary px-4">
+                                    {{ message.content|linebreaks }}
 
-                                <i class="bi bi-send"></i>
+                                </div>
 
-                            </button>
+                            </div>
+
+
+                            {% else %}
+
+                            <!-- AI Message -->
+
+                            <div class="d-flex justify-content-start mb-3">
+
+                                <div
+                                    class="bg-light rounded-4 p-3"
+                                    style="max-width:75%;">
+
+                                    <div class="fw-bold mb-1">
+
+                                        <i class="bi bi-robot"></i>
+
+                                        AI Assistant
+
+                                    </div>
+
+                                    {{ message.content|linebreaks }}
+
+                                </div>
+
+                            </div>
+
+                            {% endif %}
+
+
+                        {% empty %}
+
+
+                        <!-- Empty Chat -->
+
+                        <div class="text-center py-5">
+
+                            <i class="bi bi-robot fs-1 text-primary"></i>
+
+                            <h4 class="fw-bold mt-3">
+
+                                Hello! 👋
+
+                            </h4>
+
+                            <p class="text-muted">
+
+                                I'm your AI Study Assistant.
+
+                                Ask me anything about your studies.
+
+                            </p>
 
                         </div>
 
-                    </form>
+
+                        {% endfor %}
+
+
+                    </div>
+
+
+                    <!-- =================================
+                         Input
+                    ================================== -->
+
+                    <div class="card-footer bg-transparent p-3">
+
+                        <form
+                            method="POST"
+                            id="chatForm">
+
+                            {% csrf_token %}
+
+                            <div class="input-group">
+
+                                {{ form.message }}
+
+
+                                <button
+                                    type="submit"
+                                    id="sendButton"
+                                    class="btn btn-primary px-4">
+
+                                    <i class="bi bi-send"></i>
+
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
 
                 </div>
 
@@ -216,5 +508,154 @@ AI Study Assistant
     </div>
 
 </div>
+
+
+<!-- ==========================================
+     JavaScript
+========================================== -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+
+    const sidebar =
+        document.getElementById("chatSidebar");
+
+    const overlay =
+        document.getElementById("chatOverlay");
+
+    const openButton =
+        document.getElementById("openSidebar");
+
+    const closeButton =
+        document.getElementById("closeSidebar");
+
+    const chatMessages =
+        document.getElementById("chatMessages");
+
+    const chatForm =
+        document.getElementById("chatForm");
+
+    const sendButton =
+        document.getElementById("sendButton");
+
+
+    // ==========================================
+    // Open Sidebar
+    // ==========================================
+
+    function openSidebar() {
+
+        sidebar.classList.add("show");
+
+        overlay.classList.add("show");
+
+    }
+
+
+    // ==========================================
+    // Close Sidebar
+    // ==========================================
+
+    function closeSidebar() {
+
+        sidebar.classList.remove("show");
+
+        overlay.classList.remove("show");
+
+    }
+
+
+    // Open
+
+    if (openButton) {
+
+        openButton.addEventListener(
+            "click",
+            openSidebar
+        );
+
+    }
+
+
+    // Close
+
+    if (closeButton) {
+
+        closeButton.addEventListener(
+            "click",
+            closeSidebar
+        );
+
+    }
+
+
+    // Click outside
+
+    if (overlay) {
+
+        overlay.addEventListener(
+            "click",
+            closeSidebar
+        );
+
+    }
+
+
+    // ==========================================
+    // Auto Scroll
+    // ==========================================
+
+    function scrollToBottom() {
+
+        if (chatMessages) {
+
+            chatMessages.scrollTo({
+
+                top: chatMessages.scrollHeight,
+
+                behavior: "smooth"
+
+            });
+
+        }
+
+    }
+
+
+    // Scroll when page loads
+
+    scrollToBottom();
+
+
+    // ==========================================
+    // Send Message
+    // ==========================================
+
+    if (chatForm) {
+
+        chatForm.addEventListener(
+            "submit",
+            function () {
+
+                if (sendButton) {
+
+                    sendButton.disabled = true;
+
+                    sendButton.innerHTML =
+                        '<span class="spinner-border spinner-border-sm"></span>';
+
+                }
+
+            }
+        );
+
+    }
+
+
+});
+
+</script>
 
 {% endblock %}

@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from ai_assistant.services import ask_ai
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -448,12 +449,20 @@ Note content:
         ])
 
         request.session["ai_summary"] = ai_response
+        request.session.modified = True
 
-    except Exception:
+        messages.success(
+            request,
+            "Note summarized successfully!"
+        )
+
+    except Exception as e:
+
+        print("AI ERROR:", e)
 
         messages.error(
             request,
-            "Unable to connect to AI service."
+            f"AI Error: {e}"
         )
 
     return redirect(

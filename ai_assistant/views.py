@@ -14,7 +14,9 @@ def ai_chat(request):
     # ---------------------------------
     # Open existing chat
     # ---------------------------------
+
     if session_id:
+
         session = get_object_or_404(
             ChatSession,
             id=session_id,
@@ -22,11 +24,13 @@ def ai_chat(request):
         )
 
     else:
+
         session = None
 
     # ---------------------------------
     # POST - Send message
     # ---------------------------------
+
     if request.method == "POST":
 
         form = ChatForm(request.POST)
@@ -35,9 +39,7 @@ def ai_chat(request):
 
             user_message = form.cleaned_data["message"].strip()
 
-            # -----------------------------
-            # Create chat only when needed
-            # -----------------------------
+            # Create new chat only when needed
             if session is None:
 
                 session = ChatSession.objects.create(
@@ -45,18 +47,14 @@ def ai_chat(request):
                     title=user_message[:50]
                 )
 
-            # -----------------------------
             # Save user message
-            # -----------------------------
             ChatMessage.objects.create(
                 session=session,
                 role="user",
                 content=user_message
             )
 
-            # -----------------------------
             # Get previous messages
-            # -----------------------------
             previous_messages = (
                 ChatMessage.objects
                 .filter(session=session)
@@ -82,9 +80,7 @@ def ai_chat(request):
                     "content": message.content
                 })
 
-            # -----------------------------
             # Call AI
-            # -----------------------------
             try:
 
                 ai_response = ask_ai(messages)
@@ -102,17 +98,16 @@ def ai_chat(request):
                     "Please try again later."
                 )
 
-            # -----------------------------
             # Save AI response
-            # -----------------------------
             ChatMessage.objects.create(
                 session=session,
                 role="assistant",
                 content=ai_response
             )
 
-            # Update chat title
+            # Update title
             if session.title == "New AI Chat":
+
                 session.title = user_message[:50]
                 session.save()
 
@@ -125,8 +120,9 @@ def ai_chat(request):
         form = ChatForm()
 
     # ---------------------------------
-    # Sidebar chats
+    # Old Chats
     # ---------------------------------
+
     sessions = ChatSession.objects.filter(
         user=request.user
     ).order_by("-updated_at")
@@ -134,6 +130,7 @@ def ai_chat(request):
     # ---------------------------------
     # Messages
     # ---------------------------------
+
     if session:
 
         messages = ChatMessage.objects.filter(
@@ -147,6 +144,7 @@ def ai_chat(request):
     # ---------------------------------
     # Render
     # ---------------------------------
+
     return render(
         request,
         "ai_assistant/chat.html",
@@ -157,3 +155,23 @@ def ai_chat(request):
             "form": form,
         }
     )
+
+
+# ==========================================
+# Delete Chat
+# ==========================================
+
+@login_required
+def delete_chat(request, session_id):
+
+    session = get_object_or_404(
+        ChatSession,
+        id=session_id,
+        user=request.user
+    )
+
+    if request.method == "POST":
+
+        session.delete()
+
+    return redirect("ai_chat")
