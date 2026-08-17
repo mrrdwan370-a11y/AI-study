@@ -211,6 +211,24 @@ AI Study Hub | My Profile
 
         box-shadow:
             0 18px 40px rgba(99,102,241,.3);
+
+        object-fit: cover;
+    }
+
+    .avatar-image {
+        width: 125px;
+        height: 125px;
+
+        display: block;
+
+        border-radius: 50%;
+
+        object-fit: cover;
+
+        border: 5px solid rgba(99,102,241,.12);
+
+        box-shadow:
+            0 18px 40px rgba(99,102,241,.3);
     }
 
     .online {
@@ -630,7 +648,6 @@ AI Study Hub | My Profile
     </div>
 
 
-
     <div class="row g-4">
 
 
@@ -648,13 +665,27 @@ AI Study Hub | My Profile
                 <div class="profile-card">
 
 
+                    <!-- PROFILE AVATAR -->
+
                     <div class="avatar-container">
 
-                        <div class="avatar">
+                        {% if profile.avatar %}
 
-                            {{ profile_user.first_name|first|default:profile_user.username|first|upper }}
+                            <img
+                                src="{{ profile.avatar.url }}"
+                                class="avatar-image"
+                                alt="Profile Picture">
 
-                        </div>
+                        {% else %}
+
+                            <div class="avatar">
+
+                                {{ profile_user.first_name|first|default:profile_user.username|first|upper }}
+
+                            </div>
+
+                        {% endif %}
+
 
                         <div class="online"></div>
 
@@ -705,11 +736,17 @@ AI Study Hub | My Profile
                             <span class="completion-value">
 
                                 {% if profile_user.first_name and profile_user.last_name and profile_user.email %}
+
                                     100%
+
                                 {% elif profile_user.first_name or profile_user.last_name or profile_user.email %}
+
                                     75%
+
                                 {% else %}
+
                                     40%
+
                                 {% endif %}
 
                             </span>
@@ -822,7 +859,6 @@ AI Study Hub | My Profile
 
 
         </div>
-
 
 
         <!-- =========================================
@@ -940,7 +976,6 @@ AI Study Hub | My Profile
             </div>
 
 
-
             <!-- AI LEARNING SCORE -->
 
             <div class="ai-score mb-4">
@@ -983,8 +1018,9 @@ AI Study Hub | My Profile
                         </p>
 
 
-                        <div class="progress mt-3"
-                             style="height:7px;background:rgba(255,255,255,.1);">
+                        <div
+                            class="progress mt-3"
+                            style="height:7px;background:rgba(255,255,255,.1);">
 
                             <div
                                 class="progress-bar"
@@ -1005,7 +1041,6 @@ AI Study Hub | My Profile
                 </div>
 
             </div>
-
 
 
             <!-- ACCOUNT INFORMATION -->
@@ -1170,7 +1205,6 @@ AI Study Hub | My Profile
                 </div>
 
             </div>
-
 
 
             <!-- SECURITY -->
