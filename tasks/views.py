@@ -10,13 +10,14 @@ from django.shortcuts import (
 )
 
 from .forms import TaskForm
-from .models import Task
+
 from dashboard.models import Activity
 
 # AI Service
 from ai_assistant.services import ask_ai
-
-
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, render
+from .models import Task
 @login_required
 def task_list(request):
 
@@ -369,4 +370,27 @@ Help the student understand the solution.
         title="AI Solution Ready",
         message=f"AI has solved your task '{task.title}'.",
         url="/tasks/"
+    )
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, render
+
+from .models import Task
+
+
+@login_required
+def task_detail(request, pk):
+
+    task = get_object_or_404(
+        Task,
+        pk=pk,
+        user=request.user
+    )
+
+    return render(
+        request,
+        "tasks/task_detail.html",
+        {
+            "task": task
+        }
     )

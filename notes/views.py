@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from ai_assistant.services import ask_ai
 from django.contrib import messages
+from django.urls import reverse
+from tasks.models import Task
+from resources.models import Resource
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import JsonResponse
@@ -365,29 +368,33 @@ def tag_create(request):
             "form": form
         }
     )
-
 @login_required
-def notes_live_search(request):
+def global_live_search(request):
 
     query = request.GET.get("q", "").strip()
 
+    results = []
+
+    if not query:
+        return JsonResponse({
+            "results": []
+        })
+
+    # ==========================================
+    # NOTES
+    # ==========================================
+
     notes = Note.objects.filter(
         user=request.user
-    )
+    ).filter(
+        Q(title__icontains=query) |
+        Q(content__icontains=query) |
+        Q(tags__name__icontains=query)
+    ).distinct()[:10]
 
-    if query:
-        notes = notes.filter(
-            Q(title__icontains=query) |
-            Q(content__icontains=query) |
-            Q(tags__name__icontains=query)
-        ).distinct()
-
-    data = []
-
-    for note in notes[:10]:
-
-        data.append({
-            "id": note.id,
+    for note in notes:
+        results.append({
+            "type": "Note",
             "title": note.title,
             "content": note.content[:120],
             "category": (
@@ -395,13 +402,61 @@ def notes_live_search(request):
                 if note.category
                 else ""
             ),
-            "url": f"/notes/{note.id}/",
+            "url": f"/notes/{note.pk}/",
         })
 
+    # ==========================================
+    # TASKS
+    # ==========================================
+
+    tasks = Task.objects.filter(
+        user=request.user
+    ).filter(
+        Q(title__icontains=query) |
+        Q(description__icontains=query)
+    )[:10]
+
+    for task in tasks:
+        results.append({
+            "id": task.id,
+            "title": task.title,
+            "content": task.description[:120],
+            "category": task.get_priority_display(),
+            "type": "Task",
+            "url": reverse(
+                "task_detail",
+                args=[task.id]
+            ),
+        })
+
+    # ==========================================
+    # RESOURCES
+    # ==========================================
+
+    resources = Resource.objects.filter(
+        user=request.user
+    ).filter(
+        Q(title__icontains=query) |
+        Q(description__icontains=query) |
+        Q(resource_type__icontains=query)
+    )[:10]
+
+    for resource in resources:
+        results.append({
+            "type": "Resource",
+            "title": resource.title,
+            "content": resource.description[:120],
+            "category": resource.get_resource_type_display(),
+            "url": f"/resources/{resource.pk}/",
+        })
+
+    # ==========================================
+    # RETURN RESULTS
+    # ==========================================
+
     return JsonResponse({
-        "results": data
+        "results": results[:20]
     })
-# Create your views here.
 @login_required
 def summarize_note(request, pk):
 

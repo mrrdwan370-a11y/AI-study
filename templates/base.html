@@ -1,3 +1,4 @@
+
 {% load static %}
 
 <!DOCTYPE html>
@@ -40,10 +41,14 @@
 
 
     <!-- =========================================
-         NOTIFICATIONS CSS
+         NOTIFICATIONS + SEARCH CSS
     ========================================== -->
 
     <style>
+
+        /* ===============================
+           NOTIFICATIONS
+        ================================ */
 
         .notification-wrapper {
             position: relative;
@@ -215,14 +220,226 @@
         }
 
 
+        /* ===============================
+           GLOBAL SEARCH
+        ================================ */
+
+        .topbar-search {
+            position: relative;
+
+            display: flex;
+
+            align-items: center;
+
+            flex: 1;
+
+            max-width: 600px;
+
+            z-index: 10000;
+        }
+
+
+        .topbar-search i {
+            position: absolute;
+
+            left: 18px;
+
+            color: #64748b;
+
+            font-size: 18px;
+
+            pointer-events: none;
+
+            z-index: 2;
+        }
+
+
+        .topbar-search input {
+            width: 100%;
+
+            height: 48px;
+
+            padding-left: 48px;
+            padding-right: 18px;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 14px;
+
+            outline: none;
+
+            background: #ffffff;
+
+            transition: .2s;
+        }
+
+
+        .topbar-search input:focus {
+            border-color: #6366f1;
+
+            box-shadow:
+                0 0 0 3px rgba(99, 102, 241, 0.10);
+        }
+
+
+        /* ===============================
+           SEARCH DROPDOWN
+        ================================ */
+
+        .search-results {
+
+            position: absolute;
+
+            top: 56px;
+
+            left: 0;
+
+            right: 0;
+
+            background: #ffffff;
+
+            border-radius: 14px;
+
+            border: 1px solid #e2e8f0;
+
+            box-shadow:
+                0 15px 40px rgba(15, 23, 42, 0.15);
+
+            overflow: hidden;
+
+            display: none;
+
+            max-height: 420px;
+
+            overflow-y: auto;
+
+            z-index: 99999;
+        }
+
+
+        .search-results.show {
+            display: block;
+        }
+
+
+        .search-result-item {
+
+            display: block;
+
+            padding: 13px 16px;
+
+            text-decoration: none;
+
+            color: #1e293b;
+
+            border-bottom:
+                1px solid #f1f5f9;
+
+            transition: .2s;
+        }
+
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+
+        .search-result-item:hover {
+            background: #f8fafc;
+        }
+
+
+        .search-result-title {
+
+            font-weight: 700;
+
+            font-size: 14px;
+
+            margin-bottom: 4px;
+        }
+
+
+        .search-result-content {
+
+            font-size: 12px;
+
+            color: #64748b;
+
+            line-height: 1.5;
+        }
+
+
+        .search-result-category {
+
+            display: inline-block;
+
+            margin-top: 7px;
+
+            padding: 3px 8px;
+
+            font-size: 10px;
+
+            border-radius: 20px;
+
+            background: #eef2ff;
+
+            color: #4f46e5;
+        }
+
+
+        .search-message {
+
+            padding: 20px;
+
+            text-align: center;
+
+            color: #94a3b8;
+
+            font-size: 13px;
+        }
+
+
+        .search-loading {
+
+            padding: 18px;
+
+            text-align: center;
+
+            color: #64748b;
+
+            font-size: 13px;
+        }
+
+
+        @media(max-width: 768px) {
+
+            .topbar-search {
+
+                max-width: none;
+
+                margin: 0 10px;
+            }
+
+            .search-results {
+
+                left: 0;
+
+                right: 0;
+            }
+
+        }
+
+
         @media(max-width: 576px) {
 
             .notification-menu {
+
                 position: fixed;
 
                 top: 70px;
 
                 right: 15px;
+
                 left: 15px;
 
                 width: auto;
@@ -509,15 +726,29 @@
             </button>
 
 
-            <!-- Search -->
+            <!-- =====================================
+                 GLOBAL SEARCH
+            ====================================== -->
 
             <div class="topbar-search">
 
                 <i class="bi bi-search"></i>
 
+
                 <input
                     type="text"
-                    placeholder="Search your study content...">
+                    id="globalSearch"
+                    placeholder="Search notes, tasks, resources..."
+                    autocomplete="off">
+
+
+                <!-- Search Results -->
+
+                <div
+                    id="searchResults"
+                    class="search-results">
+                </div>
+
 
             </div>
 
@@ -847,6 +1078,346 @@
 
 <script
     src="{% static 'js/main.js' %}">
+</script>
+
+
+<!-- =========================================
+     GLOBAL SEARCH JS
+========================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const searchInput =
+            document.getElementById("globalSearch");
+
+        const searchResults =
+            document.getElementById("searchResults");
+
+
+        if (!searchInput || !searchResults) {
+            return;
+        }
+
+
+        let searchTimeout;
+
+
+        /* =====================================
+           SEARCH WHILE TYPING
+        ====================================== */
+
+        searchInput.addEventListener(
+            "input",
+            function () {
+
+                const query =
+                    searchInput.value.trim();
+
+
+                clearTimeout(searchTimeout);
+
+
+                /* Empty search */
+
+                if (!query) {
+
+                    searchResults.innerHTML = "";
+
+                    searchResults.classList.remove(
+                        "show"
+                    );
+
+                    return;
+
+                }
+
+
+                /* Loading */
+
+                searchResults.innerHTML = `
+                    <div class="search-loading">
+
+                        <i class="bi bi-arrow-repeat me-1"></i>
+
+                        Searching...
+
+                    </div>
+                `;
+
+                searchResults.classList.add("show");
+
+
+                /* Delay */
+
+                searchTimeout = setTimeout(
+                    function () {
+
+                        fetch(
+                            "{% url 'global_live_search' %}?q="
+                            + encodeURIComponent(query)
+                        )
+
+                        .then(
+                            response => {
+
+                                if (!response.ok) {
+
+                                    throw new Error(
+                                        "Search request failed"
+                                    );
+
+                                }
+
+                                return response.json();
+
+                            }
+                        )
+
+                        .then(
+                            data => {
+
+                                searchResults.innerHTML = "";
+
+
+                                /* =========================
+                                   NO RESULTS
+                                ========================== */
+
+                                if (
+                                    !data.results ||
+                                    data.results.length === 0
+                                ) {
+
+                                    searchResults.innerHTML = `
+
+                                        <div class="search-message">
+
+                                            <i class="bi bi-search fs-4"></i>
+
+                                            <div class="mt-2">
+                                                No results found
+                                            </div>
+
+                                        </div>
+
+                                    `;
+
+                                    searchResults.classList.add(
+                                        "show"
+                                    );
+
+                                    return;
+
+                                }
+
+
+                                /* =========================
+                                   DISPLAY RESULTS
+                                ========================== */
+
+                                data.results.forEach(
+                                    function (item) {
+
+                                        const result =
+                                            document.createElement("a");
+
+
+                                        result.href =
+                                            item.url;
+
+
+                                        result.className =
+                                            "search-result-item";
+
+
+                                        /* Type */
+
+                                        const type =
+                                            document.createElement("span");
+
+
+                                        type.className =
+                                            "search-result-category";
+
+
+                                        type.textContent =
+                                            item.type;
+
+
+                                        /* Title */
+
+                                        const title =
+                                            document.createElement("div");
+
+
+                                        title.className =
+                                            "search-result-title";
+
+
+                                        title.textContent =
+                                            item.title;
+
+
+                                        /* Content */
+
+                                        const content =
+                                            document.createElement("div");
+
+
+                                        content.className =
+                                            "search-result-content";
+
+
+                                        content.textContent =
+                                            item.content || "";
+
+
+                                        /* Category */
+
+                                        if (item.category) {
+
+                                            const category =
+                                                document.createElement("span");
+
+
+                                            category.className =
+                                                "search-result-category ms-1";
+
+
+                                            category.textContent =
+                                                item.category;
+
+
+                                            title.appendChild(
+                                                category
+                                            );
+
+                                        }
+
+
+                                        /* Build result */
+
+                                        result.appendChild(
+                                            type
+                                        );
+
+                                        result.appendChild(
+                                            title
+                                        );
+
+                                        result.appendChild(
+                                            content
+                                        );
+
+
+                                        searchResults.appendChild(
+                                            result
+                                        );
+
+                                    }
+                                );
+
+
+                                searchResults.classList.add(
+                                    "show"
+                                );
+
+                            }
+                        )
+
+                        .catch(
+                            function (error) {
+
+                                console.error(
+                                    "Global Search Error:",
+                                    error
+                                );
+
+
+                                searchResults.innerHTML = `
+
+                                    <div
+                                        class="search-message text-danger">
+
+                                        <i
+                                            class="bi bi-exclamation-circle">
+                                        </i>
+
+                                        <div class="mt-2">
+                                            Search failed
+                                        </div>
+
+                                    </div>
+
+                                `;
+
+                                searchResults.classList.add(
+                                    "show"
+                                );
+
+                            }
+                        );
+
+                    },
+                    300
+                );
+
+            }
+        );
+
+
+        /* =====================================
+           HIDE RESULTS WHEN CLICKING OUTSIDE
+        ====================================== */
+
+        document.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    !searchInput.contains(event.target) &&
+                    !searchResults.contains(event.target)
+                ) {
+
+                    searchResults.classList.remove(
+                        "show"
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* =====================================
+           SHOW RESULTS WHEN FOCUSING
+        ====================================== */
+
+        searchInput.addEventListener(
+            "focus",
+            function () {
+
+                if (
+                    searchInput.value.trim() &&
+                    searchResults.innerHTML.trim()
+                ) {
+
+                    searchResults.classList.add(
+                        "show"
+                    );
+
+                }
+
+            }
+        );
+
+    }
+);
+
 </script>
 
 

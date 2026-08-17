@@ -21,10 +21,10 @@ urlpatterns = [
         views.note_detail,
         name="note_detail"
     ),
-path(
-    "live-search/",
-    views.notes_live_search,
-    name="notes_live_search"
+    path(
+    "global-search/",
+    views.global_live_search,
+    name="global_live_search"
 ),
     path(
         "<int:pk>/edit/",

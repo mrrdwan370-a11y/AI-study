@@ -3,6 +3,11 @@ from . import views
 
 
 urlpatterns = [
+    path(
+    "<int:pk>/",
+    views.task_detail,
+    name="task_detail"
+),
 
     path(
         "",
