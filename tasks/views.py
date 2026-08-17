@@ -1,4 +1,5 @@
 from django.contrib import messages
+from notifications.utils import create_notification
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -133,6 +134,12 @@ def task_create(request):
             "button_text": "Create Task",
         }
     )
+    create_notification(
+        user=request.user,
+        title="New Task Created",
+        message=f"Your task '{task.title}' was created successfully.",
+        url="/tasks/"
+)
 
 
 @login_required
@@ -185,6 +192,12 @@ def task_update(request, pk):
             "button_text": "Save Changes",
             "task": task,
         }
+    )
+    create_notification(
+        user=request.user,
+        title="Task Updated",
+        message=f"Your task '{task.title}' was updated.",
+        url="/tasks/"
     )
 
 
@@ -266,6 +279,12 @@ def task_complete(request, pk):
     return redirect(
         "tasks_list"
     )
+    create_notification(
+        user=request.user,
+        title="Task Completed",
+        message=f"Great job! You completed '{task.title}'.",
+        url="/tasks/"
+    )
 
 
 # ==========================================================
@@ -344,4 +363,10 @@ Help the student understand the solution.
 
     return redirect(
         "tasks_list"
+    )
+    create_notification(
+        user=request.user,
+        title="AI Solution Ready",
+        message=f"AI has solved your task '{task.title}'.",
+        url="/tasks/"
     )
