@@ -15,11 +15,6 @@ body {
     display: flex;
 }
 
-
-/* =========================
-   SIDEBAR
-========================= */
-
 .sidebar {
     width: 260px;
     min-height: 100vh;
@@ -60,11 +55,6 @@ body {
     color: #9ca3af;
 }
 
-
-/* =========================
-   NAVIGATION
-========================= */
-
 .sidebar-nav {
     padding: 25px 15px;
     flex: 1;
@@ -99,11 +89,6 @@ body {
 .nav-link i {
     font-size: 18px;
 }
-
-
-/* =========================
-   USER
-========================= */
 
 .sidebar-bottom {
     padding: 15px;
@@ -159,21 +144,11 @@ body {
     color: white;
 }
 
-
-/* =========================
-   MAIN
-========================= */
-
 .main-content {
     margin-left: 260px;
     width: calc(100% - 260px);
     min-height: 100vh;
 }
-
-
-/* =========================
-   TOPBAR
-========================= */
 
 .topbar {
     height: 75px;
@@ -253,60 +228,38 @@ body {
     object-fit: cover;
 }
 
-
-/* =========================
-   CONTENT
-========================= */
-
 .page-content {
     padding: 30px;
 }
 
-
-/* =========================
-   RESPONSIVE
-========================= */
-
 @media (max-width: 992px) {
-
     .sidebar {
         transform: translateX(-100%);
         transition: 0.3s;
     }
-
     .sidebar.show {
         transform: translateX(0);
     }
-
     .main-content {
         margin-left: 0;
         width: 100%;
     }
-
     .menu-btn {
         display: block;
     }
 }
 
-
 @media (max-width: 576px) {
-
     .page-content {
         padding: 20px 15px;
     }
-
     .topbar {
         padding: 0 15px;
     }
-
     .topbar-search {
         display: none;
     }
 }
-
-/* =========================
-   DARK MODE
-========================= */
 
 body.dark-mode {
     background: #0f172a;

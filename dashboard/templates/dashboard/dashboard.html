@@ -1,217 +1,95 @@
 {% extends "base.html" %}
-
-{% block title %}
-Dashboard | AI Study Hub
-{% endblock %}
-
+{% block title %}Dashboard | AI Study Hub{% endblock %}
 {% block content %}
-
 <div class="container-fluid"><div class="mb-4">
-
-    <h2 class="fw-bold">
-        Welcome back, {{ user.first_name|default:user.username }} 👋
-    </h2>
-
-    <p class="text-muted">
-        Here's what's happening with your learning today.
-    </p>
-
+    <h2 class="fw-bold"> Welcome back, {{ user.first_name|default:user.username }} </h2>
+    <p class="text-muted"> Here's what's happening with your learning today.</p>
 </div>
 
-
 <div class="row g-4 mb-4">
-
     <div class="col-12 col-md-6 col-xl-3">
-
         <div class="card border-0 shadow-sm h-100">
-
             <div class="card-body">
-
                 <div class="d-flex justify-content-between">
-
                     <div>
-
-                        <p class="text-muted mb-1">
-                            Total Tasks
-                        </p>
-
-                        <h2 class="fw-bold">
-                            {{ total_tasks }}
-                        </h2>
-
+                        <p class="text-muted mb-1"> Total Tasks</p>
+                        <h2 class="fw-bold">  {{ total_tasks }} </h2>
                     </div>
-
                     <div class="fs-2 text-primary">
                         <i class="bi bi-check2-square"></i>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
-
     <div class="col-12 col-md-6 col-xl-3">
-
         <div class="card border-0 shadow-sm h-100">
-
             <div class="card-body">
-
                 <div class="d-flex justify-content-between">
-
                     <div>
-
-                        <p class="text-muted mb-1">
-                            Completed
-                        </p>
-
-                        <h2 class="fw-bold">
-                            {{ completed_tasks }}
-                        </h2>
-
+                        <p class="text-muted mb-1"> Completed </p>
+                        <h2 class="fw-bold">  {{ completed_tasks }}</h2>
                     </div>
-
                     <div class="fs-2 text-success">
                         <i class="bi bi-check-circle"></i>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
-
     <div class="col-12 col-md-6 col-xl-3">
-
         <div class="card border-0 shadow-sm h-100">
-
             <div class="card-body">
-
                 <div class="d-flex justify-content-between">
-
                     <div>
-
-                        <p class="text-muted mb-1">
-                            Total Notes
-                        </p>
-
-                        <h2 class="fw-bold">
-                            {{ total_notes }}
-                        </h2>
-
+                        <p class="text-muted mb-1"> Total Notes </p>
+                        <h2 class="fw-bold">{{ total_notes }} </h2>
                     </div>
-
                     <div class="fs-2 text-warning">
                         <i class="bi bi-journal-text"></i>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
-
     <div class="col-12 col-md-6 col-xl-3">
-
         <div class="card border-0 shadow-sm h-100">
-
             <div class="card-body">
-
                 <div class="d-flex justify-content-between">
-
                     <div>
-
-                        <p class="text-muted mb-1">
-                            Resources
-                        </p>
-
-                        <h2 class="fw-bold">
-                            {{ total_resources }}
-                        </h2>
-
+                        <p class="text-muted mb-1">Resources </p>
+                        <h2 class="fw-bold">{{ total_resources }} </h2>
                     </div>
-
-                    <div class="fs-2 text-info">
-                        <i class="bi bi-bookmark-star"></i>
-                    </div>
-
+                    <div class="fs-2 text-info"> <i class="bi bi-bookmark-star"></i></div>
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
 </div>
-
-
 <div class="row g-4">
-
     <div class="col-12 col-lg-8">
-
         <div class="card border-0 shadow-sm">
-
             <div class="card-body">
-
                 <div class="d-flex justify-content-between mb-3">
-
                     <div>
-
-                        <h5 class="fw-bold">
-                            Upcoming Tasks
-                        </h5>
-
-                        <p class="text-muted mb-0">
-                            Stay on top of your study schedule.
-                        </p>
-
+                        <h5 class="fw-bold"> Upcoming Tasks </h5>
+                        <p class="text-muted mb-0"> Stay on top of your study schedule. </p>
                     </div>
-
-                    <a
-                        href="{% url 'tasks_list' %}"
-                        class="btn btn-sm btn-primary">
-
-                        View All
-
-                    </a>
-
+                    <a href="{% url 'tasks_list' %}" class="btn btn-sm btn-primary"> View All </a>
                 </div>
-
-
                 {% for task in upcoming_tasks %}
-
                 <div class="border-bottom py-3">
-
                     <div class="d-flex justify-content-between">
-
                         <div>
-
-                            <h6 class="fw-bold mb-1">
-                                {{ task.title }}
-                            </h6>
-
+                            <h6 class="fw-bold mb-1">  {{ task.title }} </h6>
                             <small class="text-muted">
-
                                 {% if task.due_date %}
                                     Due {{ task.due_date|date:"M d, Y" }}
                                 {% else %}
                                     No due date
                                 {% endif %}
-
                             </small>
-
                         </div>
-
 
                         <span class="badge
                             {% if task.priority == 'HIGH' %}
@@ -220,90 +98,39 @@ Dashboard | AI Study Hub
                                 bg-warning text-dark
                             {% else %}
                                 bg-success
-                            {% endif %}
-                        ">
-
+                            {% endif %}">
                             {{ task.get_priority_display }}
-
                         </span>
-
                     </div>
-
                 </div>
-
                 {% empty %}
-
                 <div class="text-center py-5">
-
                     <i class="bi bi-check2-circle fs-1 text-muted"></i>
-
-                    <p class="text-muted mt-2">
-                        No upcoming tasks.
-                    </p>
-
+                    <p class="text-muted mt-2"> No upcoming tasks. </p>
                 </div>
-
                 {% endfor %}
-
             </div>
-
         </div>
-
     </div>
-
-
     <div class="col-12 col-lg-4">
-
         <div class="card border-0 shadow-sm">
-
             <div class="card-body">
-
-                <h5 class="fw-bold">
-                    Recent Activity
-                </h5>
-
+                <h5 class="fw-bold"> Recent Activity</h5>
                 <div class="mt-3">
-
                     {% for activity in recent_activities %}
-
                     <div class="d-flex gap-3 mb-3">
-
-                        <div class="text-primary">
-
-                            <i class="bi bi-check-circle-fill"></i>
-
-                        </div>
-
+                        <div class="text-primary"> <i class="bi bi-check-circle-fill"></i></div>
                         <div>
-
-                            <strong>
-                                {{ activity.action }}
-                            </strong>
-
-                            <p class="text-muted small mb-0">
-                                {{ activity.description }}
-                            </p>
-
+                            <strong> {{ activity.action }} </strong>
+                            <p class="text-muted small mb-0"> {{ activity.description }} </p>
                         </div>
-
                     </div>
-
                     {% empty %}
-
-                    <p class="text-muted">
-                        No recent activity yet.
-                    </p>
-
+                    <p class="text-muted"> No recent activity yet. </p>
                     {% endfor %}
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
 </div>
-
 </div>{% endblock %}

@@ -1,584 +1,193 @@
 {% extends "base.html" %}
 {% load static %}
-
-{% block title %}
-My Notes | AI Study Hub
-{% endblock %}
-
+{% block title %}My Notes | AI Study Hub{% endblock %}
 {% block content %}
-
 <div class="container-fluid py-2">
-
-    <!-- Header -->
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
-
         <div>
-            <h2 class="fw-bold mb-1">
-                <i class="bi bi-journal-text text-primary me-2"></i>
-                My Notes
-            </h2>
-
-            <p class="text-muted mb-0">
-                Capture, organize and review your knowledge.
-            </p>
+            <h2 class="fw-bold mb-1"> <i class="bi bi-journal-text text-primary me-2"></i> My Notes </h2>
+            <p class="text-muted mb-0"> Capture, organize and review your knowledge. </p>
         </div>
-
         <div class="d-flex gap-2">
-
-            <a href="{% url 'category_create' %}"
-               class="btn btn-outline-secondary">
-
-                <i class="bi bi-folder-plus me-1"></i>
-                Category
-
-            </a>
-
-            <a href="{% url 'note_create' %}"
-               class="btn btn-primary">
-
-                <i class="bi bi-plus-lg me-1"></i>
-                New Note
-
-            </a>
-
+            <a href="{% url 'category_create' %}" class="btn btn-outline-secondary"><i class="bi bi-folder-plus me-1"></i> Category </a>
+            <a href="{% url 'note_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> New Note</a>
         </div>
-
     </div>
-
-
-    <!-- Search & Filters -->
     <div class="card border-0 shadow-sm mb-4">
-
         <div class="card-body">
-
             <form method="GET" class="row g-3">
-
-                <!-- Search -->
                 <div class="col-12 col-lg-6">
-
-                    <label class="form-label fw-semibold">
-                        Search Notes
-                    </label>
-
+                    <label class="form-label fw-semibold"> Search Notes </label>
                     <div class="position-relative">
-
                         <div class="input-group">
-
-                            <span class="input-group-text bg-white">
-                                <i class="bi bi-search"></i>
-                            </span>
-
-                            <input
-                                type="text"
-                                id="noteLiveSearch"
-                                name="search"
-                                value="{{ search }}"
-                                class="form-control"
-                                autocomplete="off"
-                                placeholder="Search title, content or tags...">
-
+                            <span class="input-group-text bg-white"> <i class="bi bi-search"></i> </span>
+                            <input type="text" id="noteLiveSearch" name="search"  value="{{ search }}" class="form-control" autocomplete="off" placeholder="Search title, content or tags...">
                         </div>
-
-                        <!-- Live Search Results -->
-                        <div
-                            id="liveSearchResults"
-                            class="list-group position-absolute w-100 shadow-sm d-none"
-                            style="z-index: 1050;">
-                        </div>
-
+                        <div id="liveSearchResults" class="list-group position-absolute w-100 shadow-sm d-none" style="z-index: 1050;"> </div>
                     </div>
-
                 </div>
-
-
-                <!-- Category -->
                 <div class="col-12 col-md-6 col-lg-3">
-
-                    <label class="form-label fw-semibold">
-                        Category
-                    </label>
-
-                    <select
-                        name="category"
-                        class="form-select">
-
-                        <option value="">
-                            All Categories
-                        </option>
-
+                    <label class="form-label fw-semibold"> Category</label>
+                    <select name="category" class="form-select">
+                        <option value=""> All Categories </option>
                         {% for category in categories %}
-
-                        <option
-                            value="{{ category.id }}"
-                            {% if selected_category == category.id|stringformat:"s" %}
-                                selected
-                            {% endif %}>
-
+                        <option value="{{ category.id }}" {% if selected_category == category.id|stringformat:"s" %} selected{% endif %}>
                             {{ category.name }}
-
                         </option>
-
                         {% endfor %}
-
                     </select>
-
                 </div>
-
-
-                <!-- Favorites -->
                 <div class="col-12 col-md-4 col-lg-2">
-
-                    <label class="form-label fw-semibold">
-                        Favorites
-                    </label>
-
-                    <select
-                        name="favorite"
-                        class="form-select">
-
-                        <option value="">
-                            All Notes
-                        </option>
-
+                    <label class="form-label fw-semibold">Favorites </label>
+                    <select name="favorite" class="form-select">
+                        <option value=""> All Notes </option>
                         <option
                             value="1"
                             {% if favorite == "1" %}
                                 selected
                             {% endif %}>
-
-                            ⭐ Favorites
-
+                            Favorites
                         </option>
-
                     </select>
-
                 </div>
-
-
-                <!-- Search Button -->
                 <div class="col-12 col-md-2 col-lg-1 d-flex align-items-end">
-
-                    <button
-                        type="submit"
-                        class="btn btn-dark w-100">
-
-                        <i class="bi bi-search"></i>
-
-                    </button>
-
+                    <button type="submit" class="btn btn-dark w-100"> <i class="bi bi-search"></i></button>
                 </div>
-
             </form>
-
         </div>
-
     </div>
-
-
-    <!-- Notes Count -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-
         <div>
-
             {% if page_obj.paginator.count %}
-
-            <span class="text-muted">
-                Showing
+            <span class="text-muted">Showing
                 <strong>{{ page_obj.paginator.count }}</strong>
                 note{{ page_obj.paginator.count|pluralize }}
             </span>
-
             {% endif %}
-
         </div>
-
         {% if search or selected_category or favorite %}
-
-        <a href="{% url 'notes_list' %}"
-           class="btn btn-sm btn-outline-secondary">
-
-            <i class="bi bi-x-circle me-1"></i>
-            Clear Filters
-
-        </a>
-
+        <a href="{% url 'notes_list' %}"class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-x-circle me-1"></i> Clear Filters</a>
         {% endif %}
-
     </div>
-
-
-    <!-- Notes Grid -->
-
     <div class="row g-4">
-
         {% for note in page_obj %}
-
         <div class="col-12 col-md-6 col-xl-4">
-
             <div class="card border-0 shadow-sm h-100 note-card">
-
-                <!-- Image -->
                 {% if note.image %}
-
                 <div class="position-relative">
-
-                    <img
-                        src="{{ note.image.url }}"
-                        class="card-img-top"
-                        style="height: 190px; object-fit: cover;"
-                        alt="{{ note.title }}">
-
+                    <img src="{{ note.image.url }}" class="card-img-top"style="height: 190px; object-fit: cover;"alt="{{ note.title }}">
                     {% if note.is_favorite %}
-
-                    <span
-                        class="position-absolute top-0 end-0 m-3 badge bg-warning text-dark">
-
-                        <i class="bi bi-star-fill me-1"></i>
-                        Favorite
-
-                    </span>
-
+                    <span class="position-absolute top-0 end-0 m-3 badge bg-warning text-dark">
+                        <i class="bi bi-star-fill me-1"></i> Favorite </span>
                     {% endif %}
-
                 </div>
-
                 {% endif %}
-
-
                 <div class="card-body d-flex flex-column">
-
-                    <!-- Category + Favorite -->
-
                     <div class="d-flex justify-content-between align-items-center mb-2">
-
                         <div>
-
                             {% if note.category %}
-
-                            <span class="badge bg-primary-subtle text-primary">
-
-                                <i class="bi bi-folder me-1"></i>
-                                {{ note.category.name }}
-
-                            </span>
-
+                            <span class="badge bg-primary-subtle text-primary"> <i class="bi bi-folder me-1"></i>{{ note.category.name }} </span>
                             {% else %}
-
-                            <span class="badge bg-light text-muted">
-
-                                No Category
-
-                            </span>
-
+                            <span class="badge bg-light text-muted">No Category</span>
                             {% endif %}
-
                         </div>
-
-
-                        <!-- Favorite -->
-                        <form
-                            method="POST"
-                            action="{% url 'note_toggle_favorite' note.pk %}">
-
+                        <form method="POST" action="{% url 'note_toggle_favorite' note.pk %}">
                             {% csrf_token %}
-
-                            <button
-                                type="submit"
-                                class="btn btn-sm btn-light rounded-circle"
-                                title="Toggle Favorite">
-
+                            <button type="submit" class="btn btn-sm btn-light rounded-circle" title="Toggle Favorite">
                                 {% if note.is_favorite %}
-
                                 <i class="bi bi-star-fill text-warning"></i>
-
                                 {% else %}
-
                                 <i class="bi bi-star text-muted"></i>
-
                                 {% endif %}
-
                             </button>
-
                         </form>
-
                     </div>
-
-
-                    <!-- Title -->
-
-                    <h5 class="fw-bold mb-2">
-
-                        {{ note.title }}
-
-                    </h5>
-
-
-                    <!-- Content -->
-
-                    <p class="text-muted small mb-3">
-
-                        {{ note.content|truncatewords:25 }}
-
-                    </p>
-
-
-                    <!-- Tags -->
-
+                    <h5 class="fw-bold mb-2"> {{ note.title }}</h5>
+                    <p class="text-muted small mb-3"> {{ note.content|truncatewords:25 }} </p>
                     {% if note.tags.all %}
-
                     <div class="mb-3">
-
                         {% for tag in note.tags.all %}
-
-                        <span class="badge bg-light text-dark border me-1 mb-1">
-
-                            #{{ tag.name }}
-
-                        </span>
-
+                        <span class="badge bg-light text-dark border me-1 mb-1"> #{{ tag.name }}</span>
                         {% endfor %}
-
                     </div>
-
                     {% endif %}
-
-
-                    <!-- Spacer -->
-
                     <div class="mt-auto">
-
                         <div class="d-flex justify-content-between align-items-center mb-3">
-
-                            <small class="text-muted">
-
-                                <i class="bi bi-clock me-1"></i>
-
-                                {{ note.updated_at|date:"M d, Y" }}
-
-                            </small>
-
+                            <small class="text-muted"> <i class="bi bi-clock me-1"></i> {{ note.updated_at|date:"M d, Y" }}</small>
                         </div>
-
-
-                        <!-- Actions -->
-
                         <div class="d-flex gap-2">
-
-                            <a
-                                href="{% url 'note_detail' note.pk %}"
-                                class="btn btn-sm btn-primary flex-grow-1">
-
-                                <i class="bi bi-eye me-1"></i>
-                                View
-
-                            </a>
-
-
-                            <a
-                                href="{% url 'note_update' note.pk %}"
-                                class="btn btn-sm btn-outline-secondary"
-                                title="Edit">
-
-                                <i class="bi bi-pencil"></i>
-
-                            </a>
-
-
-                            <a
-                                href="{% url 'note_delete' note.pk %}"
-                                class="btn btn-sm btn-outline-danger"
-                                title="Delete">
-
-                                <i class="bi bi-trash"></i>
-
-                            </a>
-
+                            <a href="{% url 'note_detail' note.pk %}" class="btn btn-sm btn-primary flex-grow-1">
+                                <i class="bi bi-eye me-1"></i> View </a>
+                            <a href="{% url 'note_update' note.pk %}" class="btn btn-sm btn-outline-secondary" title="Edit">
+                                <i class="bi bi-pencil"></i></a>
+                            <a href="{% url 'note_delete' note.pk %}" class="btn btn-sm btn-outline-danger" title="Delete">
+                                <i class="bi bi-trash"></i></a>
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
-
         {% empty %}
-
-        <!-- Empty State -->
-
         <div class="col-12">
-
             <div class="card border-0 shadow-sm">
-
                 <div class="card-body text-center py-5">
-
-                    <div class="mb-3">
-
-                        <i class="bi bi-journal-x display-3 text-muted"></i>
-
-                    </div>
-
-                    <h4 class="fw-bold">
-                        No notes found
-                    </h4>
-
+                    <div class="mb-3"> <i class="bi bi-journal-x display-3 text-muted"></i> </div>
+                    <h4 class="fw-bold">No notes found </h4>
                     <p class="text-muted mb-4">
-
                         {% if search or selected_category or favorite %}
-
                         Try changing your search or filters.
-
                         {% else %}
-
                         You haven't created any notes yet.
-
                         {% endif %}
-
                     </p>
-
-
                     {% if search or selected_category or favorite %}
-
-                    <a
-                        href="{% url 'notes_list' %}"
-                        class="btn btn-outline-secondary me-2">
-
-                        Clear Filters
-
-                    </a>
-
+                    <a href="{% url 'notes_list' %}"class="btn btn-outline-secondary me-2"> Clear Filters </a>
                     {% endif %}
-
-
-                    <a
-                        href="{% url 'note_create' %}"
-                        class="btn btn-primary">
-
-                        <i class="bi bi-plus-lg me-1"></i>
-                        Create Note
-
-                    </a>
-
+                    <a  href="{% url 'note_create' %}" class="btn btn-primary"> <i class="bi bi-plus-lg me-1"></i> Create Note </a>
                 </div>
-
             </div>
-
         </div>
-
         {% endfor %}
-
     </div>
-
-
-    <!-- Pagination -->
-
     {% if page_obj.has_other_pages %}
-
     <nav class="mt-5">
-
         <ul class="pagination justify-content-center">
-
-
-            <!-- Previous -->
-
             {% if page_obj.has_previous %}
-
             <li class="page-item">
-
-                <a
-                    class="page-link"
+                <a class="page-link"
                     href="?page={{ page_obj.previous_page_number }}&search={{ search }}&category={{ selected_category }}&favorite={{ favorite }}">
-
                     <i class="bi bi-chevron-left"></i>
                     Previous
-
                 </a>
-
             </li>
-
             {% else %}
-
             <li class="page-item disabled">
-
-                <span class="page-link">
-
-                    <i class="bi bi-chevron-left"></i>
-                    Previous
-
-                </span>
-
+                <span class="page-link"> <i class="bi bi-chevron-left"></i> Previous </span>
             </li>
-
             {% endif %}
-
-
-            <!-- Pages -->
-
             {% for num in page_obj.paginator.page_range %}
-
             <li
                 class="page-item {% if page_obj.number == num %}active{% endif %}">
-
-                <a
-                    class="page-link"
-                    href="?page={{ num }}&search={{ search }}&category={{ selected_category }}&favorite={{ favorite }}">
-
-                    {{ num }}
-
-                </a>
-
+                <a class="page-link" href="?page={{ num }}&search={{ search }}&category={{ selected_category }}&favorite={{ favorite }}">{{ num }} </a>
             </li>
-
             {% endfor %}
-
-
-            <!-- Next -->
-
             {% if page_obj.has_next %}
-
             <li class="page-item">
-
-                <a
-                    class="page-link"
-                    href="?page={{ page_obj.next_page_number }}&search={{ search }}&category={{ selected_category }}&favorite={{ favorite }}">
-
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}&search={{ search }}&category={{ selected_category }}&favorite={{ favorite }}">
                     Next
-                    <i class="bi bi-chevron-right"></i>
-
-                </a>
-
+                    <i class="bi bi-chevron-right"></i></a>
             </li>
-
             {% else %}
-
             <li class="page-item disabled">
-
-                <span class="page-link">
-
-                    Next
-                    <i class="bi bi-chevron-right"></i>
-
-                </span>
-
+                <span class="page-link"> Next <i class="bi bi-chevron-right"></i> </span>
             </li>
-
             {% endif %}
-
         </ul>
-
     </nav>
-
     {% endif %}
-
 </div>
-
 {% endblock %}
-
-
 {% block extra_js %}
-
 <script src="{% static 'js/notes-search.js' %}"></script>
-
 {% endblock %}

@@ -85,7 +85,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "ai_study_hub",
         "USER": "postgres",
-        "PASSWORD": "omar",
+        "PASSWORD": "basmala1372005",
         "HOST": "localhost",
         "PORT": "5432",
     }
@@ -158,25 +158,12 @@ MAILERS = {
 
 DEFAULT_FROM_EMAIL = "AI Study Hub <YOUR_GMAIL@gmail.com>"
 
-from pathlib import Path
 import os
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(BASE_DIR / ".env")
-# OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-
-
-import os
-from pathlib import Path
-from dotenv import load_dotenv
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-load_dotenv()
-
-
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 LOGOUT_REDIRECT_URL = "login"
