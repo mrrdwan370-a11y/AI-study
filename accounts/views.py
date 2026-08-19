@@ -5,12 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import update_session_auth_hash
 from django.shortcuts import render, redirect
 
-from .forms import (
-    RegisterForm,
-    ProfileForm,
-    ProfileImageForm,
-    ChangePasswordForm,
-)
+from .forms import (RegisterForm,ProfileForm,ProfileImageForm,ChangePasswordForm,)
 
 from .models import Profile
 

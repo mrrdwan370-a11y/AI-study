@@ -1,5 +1,6 @@
 from django.contrib import admin
-# from .models import AIConversation, AIMessage
+
+# from .models import  AIMessage
 
 
 # @admin.register(AIConversation)

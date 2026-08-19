@@ -1,6 +1,5 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-
 from .models import ChatSession, ChatMessage
 from .forms import ChatForm
 from .services import ask_ai
@@ -8,7 +7,6 @@ from .services import ask_ai
 
 @login_required
 def ai_chat(request):
-
     session_id = request.GET.get("session")
 
     # ---------------------------------
@@ -16,7 +14,6 @@ def ai_chat(request):
     # ---------------------------------
 
     if session_id:
-
         session = get_object_or_404(
             ChatSession,
             id=session_id,
@@ -24,7 +21,6 @@ def ai_chat(request):
         )
 
     else:
-
         session = None
 
     # ---------------------------------
@@ -32,16 +28,13 @@ def ai_chat(request):
     # ---------------------------------
 
     if request.method == "POST":
-
         form = ChatForm(request.POST)
 
         if form.is_valid():
-
             user_message = form.cleaned_data["message"].strip()
 
             # Create new chat only when needed
             if session is None:
-
                 session = ChatSession.objects.create(
                     user=request.user,
                     title=user_message[:50]
@@ -74,7 +67,6 @@ def ai_chat(request):
             ]
 
             for message in previous_messages:
-
                 messages.append({
                     "role": message.role,
                     "content": message.content
@@ -86,7 +78,6 @@ def ai_chat(request):
                 ai_response = ask_ai(messages)
 
             except Exception as e:
-
                 print("================================")
                 print("AI ERROR:")
                 print(type(e).__name__)
@@ -107,7 +98,6 @@ def ai_chat(request):
 
             # Update title
             if session.title == "New AI Chat":
-
                 session.title = user_message[:50]
                 session.save()
 
@@ -132,13 +122,11 @@ def ai_chat(request):
     # ---------------------------------
 
     if session:
-
         messages = ChatMessage.objects.filter(
             session=session
         ).order_by("created_at")
 
     else:
-
         messages = ChatMessage.objects.none()
 
     # ---------------------------------
@@ -163,7 +151,6 @@ def ai_chat(request):
 
 @login_required
 def delete_chat(request, session_id):
-
     session = get_object_or_404(
         ChatSession,
         id=session_id,
@@ -171,7 +158,5 @@ def delete_chat(request, session_id):
     )
 
     if request.method == "POST":
-
         session.delete()
-
     return redirect("ai_chat")
