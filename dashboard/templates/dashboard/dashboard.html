@@ -4,246 +4,184 @@
 Dashboard | AI Study Hub
 {% endblock %}
 
+
 {% block content %}
 
-<div class="container-fluid"><div class="mb-4">
-
-    <h2 class="fw-bold">
-        Welcome back, {{ user.first_name|default:user.username }} 👋
-    </h2>
-
-    <p class="text-muted">
-        Here's what's happening with your learning today.
-    </p>
-
-</div>
+<div class="container-fluid">
 
 
-<div class="row g-4 mb-4">
+    <!-- ==========================================
+         WELCOME
+    =========================================== -->
 
-    <div class="col-12 col-md-6 col-xl-3">
+    <div class="mb-4">
 
-        <div class="card border-0 shadow-sm h-100">
+        <h2 class="fw-bold">
+            Welcome back,
+            {{ user.first_name|default:user.username }}
+            👋
+        </h2>
 
-            <div class="card-body">
-
-                <div class="d-flex justify-content-between">
-
-                    <div>
-
-                        <p class="text-muted mb-1">
-                            Total Tasks
-                        </p>
-
-                        <h2 class="fw-bold">
-                            {{ total_tasks }}
-                        </h2>
-
-                    </div>
-
-                    <div class="fs-2 text-primary">
-                        <i class="bi bi-check2-square"></i>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
+        <p class="text-muted">
+            Here's what's happening with your learning today.
+        </p>
 
     </div>
 
 
-    <div class="col-12 col-md-6 col-xl-3">
 
-        <div class="card border-0 shadow-sm h-100">
+    <!-- ==========================================
+         STATISTICS
+    =========================================== -->
 
-            <div class="card-body">
-
-                <div class="d-flex justify-content-between">
-
-                    <div>
-
-                        <p class="text-muted mb-1">
-                            Completed
-                        </p>
-
-                        <h2 class="fw-bold">
-                            {{ completed_tasks }}
-                        </h2>
-
-                    </div>
-
-                    <div class="fs-2 text-success">
-                        <i class="bi bi-check-circle"></i>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
+    <div class="row g-4 mb-4">
 
 
-    <div class="col-12 col-md-6 col-xl-3">
+        <!-- TOTAL TASKS -->
 
-        <div class="card border-0 shadow-sm h-100">
+        <div class="col-12 col-md-6 col-xl-3">
 
-            <div class="card-body">
+            <div class="card border-0 shadow-sm h-100">
 
-                <div class="d-flex justify-content-between">
-
-                    <div>
-
-                        <p class="text-muted mb-1">
-                            Total Notes
-                        </p>
-
-                        <h2 class="fw-bold">
-                            {{ total_notes }}
-                        </h2>
-
-                    </div>
-
-                    <div class="fs-2 text-warning">
-                        <i class="bi bi-journal-text"></i>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <div class="col-12 col-md-6 col-xl-3">
-
-        <div class="card border-0 shadow-sm h-100">
-
-            <div class="card-body">
-
-                <div class="d-flex justify-content-between">
-
-                    <div>
-
-                        <p class="text-muted mb-1">
-                            Resources
-                        </p>
-
-                        <h2 class="fw-bold">
-                            {{ total_resources }}
-                        </h2>
-
-                    </div>
-
-                    <div class="fs-2 text-info">
-                        <i class="bi bi-bookmark-star"></i>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<div class="row g-4">
-
-    <div class="col-12 col-lg-8">
-
-        <div class="card border-0 shadow-sm">
-
-            <div class="card-body">
-
-                <div class="d-flex justify-content-between mb-3">
-
-                    <div>
-
-                        <h5 class="fw-bold">
-                            Upcoming Tasks
-                        </h5>
-
-                        <p class="text-muted mb-0">
-                            Stay on top of your study schedule.
-                        </p>
-
-                    </div>
-
-                    <a
-                        href="{% url 'tasks_list' %}"
-                        class="btn btn-sm btn-primary">
-
-                        View All
-
-                    </a>
-
-                </div>
-
-
-                {% for task in upcoming_tasks %}
-
-                <div class="border-bottom py-3">
+                <div class="card-body">
 
                     <div class="d-flex justify-content-between">
 
                         <div>
 
-                            <h6 class="fw-bold mb-1">
-                                {{ task.title }}
-                            </h6>
+                            <p class="text-muted mb-1">
+                                Total Tasks
+                            </p>
 
-                            <small class="text-muted">
-
-                                {% if task.due_date %}
-                                    Due {{ task.due_date|date:"M d, Y" }}
-                                {% else %}
-                                    No due date
-                                {% endif %}
-
-                            </small>
+                            <h2 class="fw-bold">
+                                {{ total_tasks }}
+                            </h2>
 
                         </div>
 
+                        <div class="fs-2 text-primary">
 
-                        <span class="badge
-                            {% if task.priority == 'HIGH' %}
-                                bg-danger
-                            {% elif task.priority == 'MEDIUM' %}
-                                bg-warning text-dark
-                            {% else %}
-                                bg-success
-                            {% endif %}
-                        ">
+                            <i class="bi bi-check2-square"></i>
 
-                            {{ task.get_priority_display }}
-
-                        </span>
+                        </div>
 
                     </div>
 
                 </div>
 
-                {% empty %}
+            </div>
 
-                <div class="text-center py-5">
+        </div>
 
-                    <i class="bi bi-check2-circle fs-1 text-muted"></i>
 
-                    <p class="text-muted mt-2">
-                        No upcoming tasks.
-                    </p>
+
+        <!-- COMPLETED -->
+
+        <div class="col-12 col-md-6 col-xl-3">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <p class="text-muted mb-1">
+                                Completed
+                            </p>
+
+                            <h2 class="fw-bold">
+                                {{ completed_tasks }}
+                            </h2>
+
+                        </div>
+
+                        <div class="fs-2 text-success">
+
+                            <i class="bi bi-check-circle"></i>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
-                {% endfor %}
+            </div>
+
+        </div>
+
+
+
+        <!-- NOTES -->
+
+        <div class="col-12 col-md-6 col-xl-3">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <p class="text-muted mb-1">
+                                Total Notes
+                            </p>
+
+                            <h2 class="fw-bold">
+                                {{ total_notes }}
+                            </h2>
+
+                        </div>
+
+                        <div class="fs-2 text-warning">
+
+                            <i class="bi bi-journal-text"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- RESOURCES -->
+
+        <div class="col-12 col-md-6 col-xl-3">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <p class="text-muted mb-1">
+                                Resources
+                            </p>
+
+                            <h2 class="fw-bold">
+                                {{ total_resources }}
+                            </h2>
+
+                        </div>
+
+                        <div class="fs-2 text-info">
+
+                            <i class="bi bi-bookmark-star"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
 
             </div>
 
@@ -252,47 +190,198 @@ Dashboard | AI Study Hub
     </div>
 
 
-    <div class="col-12 col-lg-4">
 
-        <div class="card border-0 shadow-sm">
+    <!-- ==========================================
+         CHARTS
+    =========================================== -->
 
-            <div class="card-body">
+    <div class="row g-4 mb-4">
 
-                <h5 class="fw-bold">
-                    Recent Activity
-                </h5>
 
-                <div class="mt-3">
+        <!-- TASK STATUS CHART -->
 
-                    {% for activity in recent_activities %}
+        <div class="col-12 col-lg-6">
 
-                    <div class="d-flex gap-3 mb-3">
+            <div class="card border-0 shadow-sm h-100">
 
-                        <div class="text-primary">
+                <div class="card-body">
 
-                            <i class="bi bi-check-circle-fill"></i>
+                    <div class="mb-3">
 
-                        </div>
+                        <h5 class="fw-bold mb-1">
+                            Task Progress
+                        </h5>
+
+                        <p class="text-muted small mb-0">
+                            Overview of your task status.
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        style="
+                            position: relative;
+                            height: 300px;
+                        ">
+
+                        <canvas id="taskChart"></canvas>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- STUDY CONTENT CHART -->
+
+        <div class="col-12 col-lg-6">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <div class="mb-3">
+
+                        <h5 class="fw-bold mb-1">
+                            Study Content
+                        </h5>
+
+                        <p class="text-muted small mb-0">
+                            Your learning content statistics.
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        style="
+                            position: relative;
+                            height: 300px;
+                        ">
+
+                        <canvas id="contentChart"></canvas>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ==========================================
+         UPCOMING + ACTIVITY
+    =========================================== -->
+
+    <div class="row g-4">
+
+
+        <!-- UPCOMING TASKS -->
+
+        <div class="col-12 col-lg-8">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between mb-3">
 
                         <div>
 
-                            <strong>
-                                {{ activity.action }}
-                            </strong>
+                            <h5 class="fw-bold">
+                                Upcoming Tasks
+                            </h5>
 
-                            <p class="text-muted small mb-0">
-                                {{ activity.description }}
+                            <p class="text-muted mb-0">
+                                Stay on top of your study schedule.
                             </p>
+
+                        </div>
+
+                        <a
+                            href="{% url 'tasks_list' %}"
+                            class="btn btn-sm btn-primary">
+
+                            View All
+
+                        </a>
+
+                    </div>
+
+
+                    {% for task in upcoming_tasks %}
+
+                    <div class="border-bottom py-3">
+
+                        <div class="d-flex justify-content-between">
+
+                            <div>
+
+                                <h6 class="fw-bold mb-1">
+
+                                    {{ task.title }}
+
+                                </h6>
+
+
+                                <small class="text-muted">
+
+                                    {% if task.due_date %}
+
+                                        Due
+                                        {{ task.due_date|date:"M d, Y" }}
+
+                                    {% else %}
+
+                                        No due date
+
+                                    {% endif %}
+
+                                </small>
+
+                            </div>
+
+
+                            <span
+                                class="badge
+                                {% if task.priority == 'HIGH' %}
+                                    bg-danger
+                                {% elif task.priority == 'MEDIUM' %}
+                                    bg-warning text-dark
+                                {% else %}
+                                    bg-success
+                                {% endif %}
+                                ">
+
+                                {{ task.get_priority_display }}
+
+                            </span>
 
                         </div>
 
                     </div>
 
+
                     {% empty %}
 
-                    <p class="text-muted">
-                        No recent activity yet.
-                    </p>
+                    <div class="text-center py-5">
+
+                        <i class="bi bi-check2-circle fs-1 text-muted"></i>
+
+                        <p class="text-muted mt-2">
+                            No upcoming tasks.
+                        </p>
+
+                    </div>
 
                     {% endfor %}
 
@@ -302,8 +391,238 @@ Dashboard | AI Study Hub
 
         </div>
 
+
+
+        <!-- RECENT ACTIVITY -->
+
+        <div class="col-12 col-lg-4">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <h5 class="fw-bold">
+                        Recent Activity
+                    </h5>
+
+
+                    <div class="mt-3">
+
+                        {% for activity in recent_activities %}
+
+                        <div class="d-flex gap-3 mb-3">
+
+                            <div class="text-primary">
+
+                                <i class="bi bi-check-circle-fill"></i>
+
+                            </div>
+
+
+                            <div>
+
+                                <strong>
+                                    {{ activity.action }}
+                                </strong>
+
+                                <p class="text-muted small mb-0">
+
+                                    {{ activity.description }}
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        {% empty %}
+
+                        <p class="text-muted">
+                            No recent activity yet.
+                        </p>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
 </div>
 
-</div>{% endblock %}
+{% endblock %}
+
+
+
+{% block extra_js %}
+
+<!-- Chart.js -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+
+    /* ==========================================
+       TASK STATUS CHART
+    =========================================== */
+
+    const taskCanvas = document.getElementById("taskChart");
+
+
+    if (taskCanvas) {
+
+        new Chart(taskCanvas, {
+
+            type: "doughnut",
+
+            data: {
+
+                labels: [
+                    "Completed",
+                    "Pending",
+                    "In Progress"
+                ],
+
+                datasets: [{
+
+                    data: [
+                        {{ completed_tasks }},
+                        {{ pending_tasks }},
+                        {{ in_progress_tasks }}
+                    ],
+
+                    backgroundColor: [
+                        "#22c55e",
+                        "#f59e0b",
+                        "#3b82f6"
+                    ],
+
+                    borderWidth: 0
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+
+                        position: "bottom"
+
+                    }
+
+                },
+
+                cutout: "65%"
+
+            }
+
+        });
+
+    }
+
+
+
+    /* ==========================================
+       STUDY CONTENT CHART
+    =========================================== */
+
+    const contentCanvas =
+        document.getElementById("contentChart");
+
+
+    if (contentCanvas) {
+
+        new Chart(contentCanvas, {
+
+            type: "bar",
+
+            data: {
+
+                labels: [
+                    "Tasks",
+                    "Notes",
+                    "Resources"
+                ],
+
+                datasets: [{
+
+                    label: "Total",
+
+                    data: [
+                        {{ total_tasks }},
+                        {{ total_notes }},
+                        {{ total_resources }}
+                    ],
+
+                    backgroundColor: [
+                        "#6366f1",
+                        "#f59e0b",
+                        "#06b6d4"
+                    ],
+
+                    borderRadius: 10
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+
+                        display: false
+
+                    }
+
+                },
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        ticks: {
+
+                            precision: 0
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+});
+
+</script>
+
+{% endblock %}
