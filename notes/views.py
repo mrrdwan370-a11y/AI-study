@@ -22,22 +22,28 @@ def notes_list(request):
     notes = Note.objects.filter( user=request.user ).select_related( "category").prefetch_related("tags")
     search = request.GET.get( "search",  "" )
     category_id = request.GET.get( "category",  ""  )
+    tag_id = request.GET.get("tag", "")
     favorite = request.GET.get( "favorite", "" )
     if search:
         notes = notes.filter( Q(title__icontains=search) |  Q(content__icontains=search) |  Q(tags__name__icontains=search) ).distinct()
     if category_id:
         notes = notes.filter( category_id=category_id )
+    if tag_id:
+        notes = notes.filter(tags__id=tag_id)
     if favorite == "1":
         notes = notes.filter( is_favorite=True  )
     paginator = Paginator( notes,  6 )
     page_number = request.GET.get( "page" )
     page_obj = paginator.get_page( page_number )
     categories = Category.objects.filter( user=request.user )
+    tags = Tag.objects.filter(user=request.user)
     context = {
         "page_obj": page_obj,
         "categories": categories,
         "search": search,
         "selected_category": category_id,
+        "tags": tags,
+        "selected_tag": tag_id,
         "favorite": favorite,
     }
     return render( request, "notes/notes_list.html",context )

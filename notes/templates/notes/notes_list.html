@@ -10,6 +10,7 @@
         </div>
         <div class="d-flex gap-2">
             <a href="{% url 'category_create' %}" class="btn btn-outline-secondary"><i class="bi bi-folder-plus me-1"></i> Category </a>
+            <a href="{% url 'tag_create' %}" class="btn btn-outline-secondary"><i class="bi bi-tag me-1"></i> Tag </a>
             <a href="{% url 'note_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> New Note</a>
         </div>
     </div>
@@ -37,6 +38,18 @@
                         {% endfor %}
                     </select>
                 </div>
+                <div class="col-12 col-md-6 col-lg-2">
+                    <label class="form-label fw-semibold"> Tag</label>
+                    <select name="tag" class="form-select">
+                    <option value=""> All Tags </option>
+                    {% for tag in tags %}
+                    <option value="{{ tag.id }}" {% if selected_tag == tag.id|stringformat:"s" %} selected{% endif %}>
+                        {{ tag.name }}
+                    </option>
+                    {% endfor %}
+                    </select>
+                </div>
+
                 <div class="col-12 col-md-4 col-lg-2">
                     <label class="form-label fw-semibold">Favorites </label>
                     <select name="favorite" class="form-select">

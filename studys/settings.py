@@ -85,7 +85,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "ai_study_hub",
         "USER": "postgres",
-        "PASSWORD": "omar",
+        "PASSWORD": "basmala1372005",
         "HOST": "localhost",
         "PORT": "5432",
     }
