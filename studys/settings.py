@@ -158,25 +158,12 @@ MAILERS = {
 
 DEFAULT_FROM_EMAIL = "AI Study Hub <YOUR_GMAIL@gmail.com>"
 
-from pathlib import Path
 import os
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(BASE_DIR / ".env")
-# OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-
-
-import os
-from pathlib import Path
-from dotenv import load_dotenv
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-load_dotenv()
-
-
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 LOGOUT_REDIRECT_URL = "login"

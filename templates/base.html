@@ -1,79 +1,32 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>
-        {% block title %}AI Study Hub{% endblock %}
-    </title>
-
-
-    <!-- Bootstrap -->
-
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet">
-
-
-    <!-- Bootstrap Icons -->
-
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-
-    <!-- Main CSS -->
-
-    <link
-        rel="stylesheet"
-        href="{% static 'css/style.css' %}">
-
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> {% block title %}AI Study Hub{% endblock %} </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"  rel="stylesheet">>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     {% block extra_css %}{% endblock %}
-
-
-    <!-- =========================================
-         NOTIFICATIONS CSS
-    ========================================== -->
-
     <style>
-
         .notification-wrapper {
             position: relative;
         }
 
-
         .notification-menu {
             position: absolute;
-
             top: 55px;
             right: 0;
-
             width: 340px;
-
             background: var(--bs-body-bg, #ffffff);
-
             border-radius: 18px;
-
-            box-shadow:
-                0 20px 50px rgba(15, 23, 42, 0.18);
-
+            box-shadow: 0 20px 50px rgba(15, 23, 42, 0.18);
             border: 1px solid rgba(100, 116, 139, 0.12);
-
             overflow: hidden;
-
             display: none;
-
             z-index: 9999;
         }
-
 
         .notification-menu.show {
             display: block;
@@ -82,864 +35,496 @@
 
         .notification-header {
             display: flex;
-
             align-items: center;
             justify-content: space-between;
-
             padding: 16px 18px;
-
             font-weight: 800;
-
-            border-bottom:
-                1px solid rgba(100, 116, 139, 0.12);
+            border-bottom: 1px solid rgba(100, 116, 139, 0.12);
         }
-
 
         .notification-body {
             max-height: 400px;
-
             overflow-y: auto;
         }
 
-
         .notification-item {
             display: flex;
-
             gap: 12px;
-
             padding: 15px 18px;
-
-            border-bottom:
-                1px solid rgba(100, 116, 139, 0.08);
-
+            border-bottom: 1px solid rgba(100, 116, 139, 0.08);
             transition: .2s;
         }
 
-
         .notification-item:hover {
-            background:
-                rgba(99, 102, 241, .04);
+            background: rgba(99, 102, 241, .04);
         }
-
 
         .notification-icon {
             width: 38px;
             height: 38px;
-
             min-width: 38px;
-
             display: flex;
-
             align-items: center;
             justify-content: center;
-
             border-radius: 11px;
-
             color: #6366f1;
-
-            background:
-                rgba(99, 102, 241, 0.10);
+            background: rgba(99, 102, 241, 0.10);
         }
-
 
         .notification-content {
             min-width: 0;
         }
 
-
         .notification-title {
             font-size: 12px;
-
             font-weight: 800;
-
             margin-bottom: 3px;
         }
 
-
         .notification-text {
             font-size: 11px;
-
             color: #64748b;
-
             line-height: 1.5;
-
             word-break: break-word;
         }
 
-
         .empty-notifications {
             text-align: center;
-
             padding: 30px 20px;
-
             color: #94a3b8;
         }
-
 
         .notification-empty-icon {
             width: 50px;
             height: 50px;
-
             margin: 0 auto 12px;
-
             display: flex;
-
             align-items: center;
             justify-content: center;
-
             border-radius: 50%;
-
-            background:
-                rgba(99, 102, 241, 0.10);
-
+            background: rgba(99, 102, 241, 0.10);
             color: #6366f1;
-
             font-size: 22px;
         }
 
-
         .notification-dot {
             position: absolute;
-
             top: 5px;
             right: 5px;
-
             width: 9px;
             height: 9px;
-
             background: #ef4444;
-
             border: 2px solid white;
-
             border-radius: 50%;
         }
 
-
-        @media(max-width: 576px) {
-
-            .notification-menu {
-                position: fixed;
-
-                top: 70px;
-
-                right: 15px;
-                left: 15px;
-
-                width: auto;
-            }
-
+        .topbar-search {
+            position: relative;
+            display: flex;
+            align-items: center;
+            flex: 1;
+            max-width: 600px;
+            z-index: 10000;
         }
 
-    </style>
+        .topbar-search i {
+            position: absolute;
+            left: 18px;
+            color: #64748b;
+            font-size: 18px;
+            pointer-events: none;
+            z-index: 2;
+        }
 
+        .topbar-search input {
+            width: 100%;
+            height: 48px;
+            padding-left: 48px;
+            padding-right: 18px;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            outline: none;
+            background: #ffffff;
+            transition: .2s;
+        }
+
+        .topbar-search input:focus {
+            border-color: #6366f1;
+            box-shadow:  0 0 0 3px rgba(99, 102, 241, 0.10);
+        }
+
+        .search-results {
+            position: absolute;
+            top: 56px;
+            left: 0;
+            right: 0;
+            background: #ffffff;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 15px 40px rgba(15, 23, 42, 0.15);
+            overflow: hidden;
+            display: none;
+            max-height: 420px;
+            overflow-y: auto;
+            z-index: 99999;
+        }
+
+        .search-results.show {
+            display: block;
+        }
+
+        .search-result-item {
+            display: block;
+            padding: 13px 16px;
+            text-decoration: none;
+            color: #1e293b;
+            border-bottom: 1px solid #f1f5f9;
+            transition: .2s;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-item:hover {
+            background: #f8fafc;
+        }
+
+
+        .search-result-title {
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .search-result-content {
+            font-size: 12px;
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        .search-result-category {
+            display: inline-block;
+            margin-top: 7px;
+            padding: 3px 8px;
+            font-size: 10px;
+            border-radius: 20px;
+            background: #eef2ff;
+            color: #4f46e5;
+        }
+
+        .search-message {
+            padding: 20px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .search-loading {
+            padding: 18px;
+            text-align: center;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        @media(max-width: 768px) {
+            .topbar-search {
+                max-width: none;
+                margin: 0 10px;
+            }
+
+            .search-results {
+                left: 0;
+                right: 0;
+            }
+        }
+
+        @media(max-width: 576px) {
+            .notification-menu {
+                position: fixed;
+                top: 70px;
+                right: 15px;
+                left: 15px;
+                width: auto;
+            }
+        }
+    </style>
 </head>
 
-
 <body>
-
-
 <div class="app-wrapper">
-
-
-    <!-- =========================================
-         SIDEBAR
-    ========================================== -->
-
     <aside class="sidebar" id="sidebar">
-
-
-        <!-- BRAND -->
-
         <div class="sidebar-brand">
-
-            <div class="brand-icon">
-
-                <i class="bi bi-mortarboard-fill"></i>
-
-            </div>
-
-
-            <div>
-
-                <h5>
-                    AI Study Hub
-                </h5>
-
-                <small>
-                    Learn • Organize • Grow
-                </small>
-
-            </div>
-
+            <div class="brand-icon"> <i class="bi bi-mortarboard-fill"></i> </div>
+            <div> <h5> AI Study Hub </h5> <small> Learn • Organize • Grow </small> </div>
         </div>
-
-
-        <!-- NAVIGATION -->
-
         <nav class="sidebar-nav">
-
-
-            <p class="nav-title">
-                MAIN
-            </p>
-
-
-            <!-- Dashboard -->
-
-            <a
-                href="{% url 'dashboard' %}"
-                class="nav-link">
-
+            <p class="nav-title"> MAIN </p>
+            <a href="{% url 'dashboard' %}" class="nav-link">
                 <i class="bi bi-grid-1x2-fill"></i>
-
-                <span>
-                    Dashboard
-                </span>
-
+                <span> Dashboard </span>
             </a>
-
-
-            <!-- Tasks -->
-
-            <a
-                href="{% url 'tasks_list' %}"
-                class="nav-link">
-
+            <a href="{% url 'tasks_list' %}"  class="nav-link">
                 <i class="bi bi-check2-square"></i>
-
-                <span>
-                    Study Planner
-                </span>
-
+                <span> Study Planner </span>
             </a>
-
-
-            <!-- Notes -->
-
-            <a
-                href="{% url 'notes_list' %}"
-                class="nav-link">
-
+            <a href="{% url 'notes_list' %}" class="nav-link">
                 <i class="bi bi-journal-text"></i>
-
-                <span>
-                    Notes
-                </span>
-
+                <span> Notes  </span>
             </a>
-
-
-            <!-- Resources -->
-
-            <a
-                href="{% url 'resources_list' %}"
-                class="nav-link">
-
+            <a href="{% url 'resources_list' %}" class="nav-link">
                 <i class="bi bi-bookmark-star-fill"></i>
-
-                <span>
-                    Resources
-                </span>
-
+                <span> Resources </span>
             </a>
-
-
-            <!-- AI -->
-
-            <p class="nav-title mt-4">
-                AI TOOLS
-            </p>
-
-
-            <a
-                href="{% url 'ai_chat' %}"
-                class="nav-link">
-
+            <p class="nav-title mt-4">  AI TOOLS </p>
+            <a  href="{% url 'ai_chat' %}" class="nav-link">
                 <i class="bi bi-robot"></i>
-
-                <span>
-                    AI Assistant
-                </span>
-
+                <span> AI Assistant </span>
             </a>
-
-
-            <!-- Account -->
-
-            <p class="nav-title mt-4">
-                ACCOUNT
-            </p>
-
-
-            <a
-                href="{% url 'profile' %}"
-                class="nav-link">
-
+            <p class="nav-title mt-4"> ACCOUNT </p>
+            <a  href="{% url 'profile' %}" class="nav-link">
                 <i class="bi bi-person-circle"></i>
-
-                <span>
-                    My Profile
-                </span>
-
+                <span> My Profile</span>
             </a>
-
-
-            <!-- Dark Mode -->
-
-            <a
-                href="#"
-                class="nav-link"
-                id="darkModeToggle">
-
+            <a href="#" class="nav-link" id="darkModeToggle">
                 <i class="bi bi-moon-stars-fill"></i>
-
-                <span>
-                    Dark Mode
-                </span>
-
+                <span>  Dark Mode </span>
             </a>
-
-
         </nav>
-
-
-        <!-- =========================================
-             SIDEBAR USER
-        ========================================== -->
-
         <div class="sidebar-bottom">
-
-
             {% if user.is_authenticated %}
-
-
             <div class="user-mini">
-
-
                 <div class="user-avatar">
-
-
                     {% if user.profile.avatar %}
-
-                        <img
-                            src="{{ user.profile.avatar.url }}"
-                            alt="Profile">
-
+                        <img src="{{ user.profile.avatar.url }}" alt="Profile">
                     {% else %}
-
                         {{ user.username|first|upper }}
-
                     {% endif %}
-
-
                 </div>
-
-
                 <div class="user-info">
-
-                    <strong>
-
-                        {{ user.get_full_name|default:user.username }}
-
-                    </strong>
-
-
-                    <small>
-                        Student
-                    </small>
-
+                    <strong> {{ user.get_full_name|default:user.username }} </strong>
+                    <small>  Student </small>
                 </div>
-
-
             </div>
-
-
-            <!-- Logout -->
-
-            <form
-                method="POST"
-                action="{% url 'logout' %}">
-
+            <form method="POST"  action="{% url 'logout' %}">
                 {% csrf_token %}
-
-                <button
-                    type="submit"
-                    class="logout-btn">
-
-                    <i class="bi bi-box-arrow-right"></i>
-
-                    Logout
-
-                </button>
-
+                <button type="submit" class="logout-btn"> <i class="bi bi-box-arrow-right"></i> Logout </button>
             </form>
-
-
             {% endif %}
-
-
         </div>
-
-
     </aside>
-
-
-    <!-- =========================================
-         MAIN CONTENT
-    ========================================== -->
-
     <main class="main-content">
-
-
-        <!-- =========================================
-             TOPBAR
-        ========================================== -->
-
         <header class="topbar">
-
-
-            <!-- Mobile Menu -->
-
-            <button
-                class="menu-btn"
-                id="menuBtn">
-
-                <i class="bi bi-list"></i>
-
-            </button>
-
-
-            <!-- Search -->
-
+            <button class="menu-btn" id="menuBtn"> <i class="bi bi-list"></i></button>
             <div class="topbar-search">
-
                 <i class="bi bi-search"></i>
-
-                <input
-                    type="text"
-                    placeholder="Search your study content...">
-
+                <input type="text" id="globalSearch"placeholder="Search notes, tasks, resources..." autocomplete="off">
+                <div id="searchResults" class="search-results"> </div>
             </div>
-
-
-            <!-- =====================================
-                 TOPBAR ACTIONS
-            ====================================== -->
-
             <div class="topbar-actions">
-
-
-                <!-- =================================
-                     NOTIFICATIONS
-                ================================== -->
-
                 <div class="notification-wrapper">
-
-
-                    <button
-                        type="button"
-                        class="icon-btn"
-                        id="notificationBtn"
-                        aria-label="Notifications">
-
+                    <button  type="button" class="icon-btn" id="notificationBtn" aria-label="Notifications">
                         <i class="bi bi-bell"></i>
-
-
                         {% if messages %}
-
-                            <span
-                                class="notification-dot">
-                            </span>
-
+                            <span class="notification-dot"> </span>
                         {% endif %}
-
-
                     </button>
-
-
-                    <!-- Notification Dropdown -->
-
-                    <div
-                        class="notification-menu"
-                        id="notificationMenu">
-
-
-                        <!-- Header -->
-
+                    <div  class="notification-menu" id="notificationMenu">
                         <div class="notification-header">
-
-                            <span>
-
-                                <i
-                                    class="bi bi-bell me-2">
-                                </i>
-
-                                Notifications
-
-                            </span>
-
+                            <span> <i class="bi bi-bell me-2"> </i> Notifications</span>
                         </div>
-
-
-                        <!-- Body -->
-
                         <div class="notification-body">
-
-
                             {% if messages %}
-
-
                                 {% for message in messages %}
-
-
-                                <div
-                                    class="notification-item">
-
-
-                                    <!-- Icon -->
-
+                                <div  class="notification-item">
                                     <div
                                         class="notification-icon">
-
-
                                         {% if message.tags == "success" %}
-
-                                            <i
-                                                class="bi bi-check-circle">
-                                            </i>
-
+                                            <i  class="bi bi-check-circle"> </i>
                                         {% elif message.tags == "error" %}
-
-                                            <i
-                                                class="bi bi-exclamation-circle">
-                                            </i>
-
+                                            <i class="bi bi-exclamation-circle">  </i>
                                         {% elif message.tags == "warning" %}
-
-                                            <i
-                                                class="bi bi-exclamation-triangle">
-                                            </i>
-
+                                            <i class="bi bi-exclamation-triangle"> </i>
                                         {% else %}
-
-                                            <i
-                                                class="bi bi-info-circle">
-                                            </i>
-
+                                            <i class="bi bi-info-circle"> </i>
                                         {% endif %}
-
-
                                     </div>
-
-
-                                    <!-- Content -->
-
-                                    <div
-                                        class="notification-content">
-
-
-                                        <div
-                                            class="notification-title">
-
-
+                                    <div  class="notification-content">
+                                        <div class="notification-title">
                                             {% if message.tags == "success" %}
-
                                                 Success
-
                                             {% elif message.tags == "error" %}
-
                                                 Error
-
                                             {% elif message.tags == "warning" %}
-
                                                 Warning
-
                                             {% else %}
-
                                                 Information
-
                                             {% endif %}
-
-
                                         </div>
-
-
-                                        <div
-                                            class="notification-text">
-
-                                            {{ message }}
-
-                                        </div>
-
-
+                                        <div class="notification-text"> {{ message }} </div>
                                     </div>
-
-
                                 </div>
-
-
                                 {% endfor %}
-
-
                             {% else %}
-
-
-                                <!-- Empty -->
-
-                                <div
-                                    class="empty-notifications">
-
-
-                                    <div
-                                        class="notification-empty-icon">
-
-                                        <i
-                                            class="bi bi-bell-slash">
-                                        </i>
-
-                                    </div>
-
-
-                                    <div
-                                        class="fw-bold mb-1">
-
-                                        No notifications
-
-                                    </div>
-
-
-                                    <small>
-
-                                        You don't have any
-                                        notifications yet.
-
-                                    </small>
-
-
+                                <div  class="empty-notifications">
+                                    <div  class="notification-empty-icon">
+                                        <i class="bi bi-bell-slash"> </i></div>
+                                    <div  class="fw-bold mb-1"> No notifications </div>
+                                    <small> You don't have any notifications yet. </small>
                                 </div>
-
-
                             {% endif %}
-
-
                         </div>
-
-
                     </div>
-
-
                 </div>
-
-
-                <!-- =================================
-                     PROFILE AVATAR
-                ================================== -->
-
-                <a
-                    href="{% url 'profile' %}"
-                    class="top-user">
-
-
+                <a href="{% url 'profile' %}" class="top-user">
                     {% if user.profile.avatar %}
-
-
-                        <img
-                            src="{{ user.profile.avatar.url }}"
-                            alt="Profile">
-
-
+                        <img src="{{ user.profile.avatar.url }}" alt="Profile">
                     {% else %}
-
-
-                        <span>
-
-                            {{ user.username|first|upper }}
-
-                        </span>
-
-
+                        <span> {{ user.username|first|upper }} </span>
                     {% endif %}
-
-
                 </a>
-
-
             </div>
-
-
         </header>
-
-
-        <!-- =========================================
-             DJANGO MESSAGES
-        ========================================== -->
-
         {% if messages %}
-
-
-        <div
-            class="container-fluid px-4 pt-3">
-
-
+        <div class="container-fluid px-4 pt-3">
             {% for message in messages %}
-
-
-            <div
-                class="alert
-                       alert-{{ message.tags|default:'info' }}
-                       alert-dismissible
-                       fade show">
-
-
+            <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show">
                 {{ message }}
-
-
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert">
-                </button>
-
-
+                <button type="button" class="btn-close"  data-bs-dismiss="alert"> </button>
             </div>
-
-
             {% endfor %}
-
-
         </div>
-
-
         {% endif %}
-
-
-        <!-- =========================================
-             PAGE CONTENT
-        ========================================== -->
-
         <section class="page-content">
-
             {% block content %}
-
             {% endblock %}
-
         </section>
-
-
     </main>
-
-
 </div>
-
-
-<!-- =========================================
-     BOOTSTRAP JS
-========================================== -->
-
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-</script>
-
-
-<!-- =========================================
-     MAIN JS
-========================================== -->
-
-<script
-    src="{% static 'js/main.js' %}">
-</script>
-
-
-<!-- =========================================
-     NOTIFICATION JS
-========================================== -->
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/main.js' %}"></script>
 <script>
-
 document.addEventListener(
     "DOMContentLoaded",
     function () {
-
-
-        const notificationBtn =
-            document.getElementById(
-                "notificationBtn"
-            );
-
-
-        const notificationMenu =
-            document.getElementById(
-                "notificationMenu"
-            );
-
-
-        if (
-            !notificationBtn ||
-            !notificationMenu
-        ) {
-
-            return;
-
-        }
-
-
-        /*
-         * Open / Close notification menu
-         */
-
-        notificationBtn.addEventListener(
-            "click",
-            function (event) {
-
-                event.stopPropagation();
-
-                notificationMenu.classList.toggle(
-                    "show"
-                );
-
+        const searchInput = document.getElementById("globalSearch");
+        const searchResults = document.getElementById("searchResults");
+        if (!searchInput || !searchResults) { return;  }
+        let searchTimeout;
+        searchInput.addEventListener( "input", function () {
+                const query = searchInput.value.trim();
+                clearTimeout(searchTimeout);
+                if (!query) {
+                    searchResults.innerHTML = "";
+                    searchResults.classList.remove( "show" );
+                    return;
+                }
+                searchResults.innerHTML = `
+                    <div class="search-loading">
+                        <i class="bi bi-arrow-repeat me-1"></i>
+                        Searching...
+                    </div>  `;
+                searchResults.classList.add("show");
+                searchTimeout = setTimeout( function () {
+                        fetch( "{% url 'global_live_search' %}?q=" + encodeURIComponent(query) )
+                        .then(
+                            response => {
+                                if (!response.ok) { throw new Error( "Search request failed" ); }
+                                return response.json();
+                            }
+                        )
+                        .then(
+                            data => {
+                                searchResults.innerHTML = "";
+                                if ( !data.results ||  data.results.length === 0 ) {
+                                    searchResults.innerHTML = `
+                                        <div class="search-message">
+                                            <i class="bi bi-search fs-4"></i>
+                                            <div class="mt-2"> No results found  </div>
+                                        </div>`;
+                                    searchResults.classList.add( "show" );
+                                    return;
+                                }
+                                data.results.forEach(function (item) {
+                                        const result = document.createElement("a");
+                                        result.href = item.url;
+                                        result.className = "search-result-item";
+                                        const type = document.createElement("span");
+                                        type.className = "search-result-category";
+                                        type.textContent = item.type;
+                                        const title = document.createElement("div");
+                                        title.className = "search-result-title";
+                                        title.textContent = item.title;
+                                        const content = document.createElement("div");
+                                        content.className = "search-result-content";
+                                        content.textContent = item.content || "";
+                                        if (item.category) {
+                                            const category = document.createElement("span");
+                                            category.className = "search-result-category ms-1";
+                                            category.textContent = item.category;
+                                            title.appendChild(  category );
+                                        }
+                                        result.appendChild( type );
+                                        result.appendChild( title  );
+                                        result.appendChild(  content );
+                                        searchResults.appendChild( result );
+                                    }
+                                );
+                                searchResults.classList.add( "show" );
+                            }
+                        )
+                        .catch(
+                            function (error) {
+                                console.error( "Global Search Error:",error );
+                                searchResults.innerHTML = `
+                                    <div class="search-message text-danger">
+                                        <i  class="bi bi-exclamation-circle"> </i>
+                                        <div class="mt-2"> Search failed </div>
+                                    </div> `;
+                                searchResults.classList.add( "show" );
+                            }
+                        );
+                    }, 300);
             }
         );
-
-
-        /*
-         * Prevent menu click from closing itself
-         */
-
-        notificationMenu.addEventListener(
-            "click",
-            function (event) {
-
-                event.stopPropagation();
-
+        document.addEventListener( "click",  function (event) {
+                if ( !searchInput.contains(event.target) && !searchResults.contains(event.target)  ) {
+                    searchResults.classList.remove( "show" );
+                }
             }
         );
-
-
-        /*
-         * Close when clicking outside
-         */
-
-        document.addEventListener(
-            "click",
-            function () {
-
-                notificationMenu.classList.remove(
-                    "show"
-                );
-
+        searchInput.addEventListener( "focus",function () {
+                if ( searchInput.value.trim() && searchResults.innerHTML.trim() ) {
+                    searchResults.classList.add( "show" );
+                }
             }
         );
-
-
     }
 );
-
 </script>
-
-
+<script>
+document.addEventListener( "DOMContentLoaded", function () {
+    const notificationBtn = document.getElementById( "notificationBtn" );
+    const notificationMenu = document.getElementById("notificationMenu" );
+        if ( !notificationBtn || !notificationMenu ) {
+            return;
+        }
+     notificationBtn.addEventListener( "click", function (event) {
+                event.stopPropagation();
+                notificationMenu.classList.toggle( "show" );
+            }
+        );
+    notificationMenu.addEventListener( "click", function (event) {
+                event.stopPropagation();
+            }
+        );
+        document.addEventListener( "click", function () {
+                notificationMenu.classList.remove( "show"  );
+            }
+        );
+    }
+);
+</script>
 {% block extra_js %}{% endblock %}
-
-
 </body>
-
 </html>

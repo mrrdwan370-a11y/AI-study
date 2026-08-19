@@ -4,16 +4,9 @@ from .models import Note, Category, Tag
 
 @admin.register(Note)
 class NoteAdmin(admin.ModelAdmin):
-    list_display = (
-        "title",
-        "user",
-        "category",
-        "is_favorite",
-        "created_at",
-    )
+    list_display = ( "title", "user", "category","is_favorite", "created_at", )
     list_filter = ("category", "is_favorite", "created_at")
     search_fields = ("title", "content")
-
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
